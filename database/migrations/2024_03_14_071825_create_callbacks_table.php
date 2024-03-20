@@ -20,7 +20,9 @@ return new class extends Migration
             $table->enum('job_status', ['Booking', 'Quote']);
             $table->string('location');
             $table->enum('callback_status', ['Booked', 'Pending', 'New', 'Lost']);
+            $table->unsignedBigInteger('customer_id');
             $table->timestamps();
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 
