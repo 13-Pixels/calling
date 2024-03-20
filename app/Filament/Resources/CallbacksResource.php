@@ -33,8 +33,6 @@ class CallbacksResource extends Resource
                         Datepicker::make('enquiry_date')->label('Enquiry Date')->required(),
                         Datepicker::make('booking_date')->label('Booking Date')->required(),
                         ])->columns(2),
-
-
                         Section::make('')
                         ->schema([
                             Select::make('job_status')->label('Job Status')
@@ -53,7 +51,11 @@ class CallbacksResource extends Resource
                             Datepicker::make('callback_date')->label('Callback Date')->required(),
                             TextInput::make('location')->label('Location')->required(),
                         ])->columns(2),
-            ]);
+                            ]);
+            // $customerId = $form->get('customer_id');
+            // $custdata = Customer::findOrFail($customerId);
+            // dd($custdata);
+            // $form->getModel()->customer = $customer;
     }
 
     public static function table(Table $table): Table

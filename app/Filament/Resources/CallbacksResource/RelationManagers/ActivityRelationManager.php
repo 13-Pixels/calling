@@ -46,7 +46,7 @@ class ActivityRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()->color('warning'),
             ]);
             // ->bulkActions([
             //     Tables\Actions\BulkActionGroup::make([
