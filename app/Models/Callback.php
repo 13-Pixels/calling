@@ -15,10 +15,15 @@ class Callback extends Model
         'callback_date',
         'job_status',
         'location',
-        'callback_status'
+        'callback_status',
+        'customer_id'
     ];
     public function activity()
     {
         return $this->hasMany(Callactivity::class);
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

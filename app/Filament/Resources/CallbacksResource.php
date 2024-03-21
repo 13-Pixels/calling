@@ -15,41 +15,32 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Datepicker;
 use Filament\Forms\Components\Select;
+use App\Models\Customer;
 
 class CallbacksResource extends Resource
 {
     protected static ?string $model = Callback::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    
-
     public static function form(Form $form): Form
     {
+        $customers = Customer::pluck('name', 'id');
         return $form
             ->schema([
-                Section::make('Callback Information')
+                Section::make('')
                     ->schema([
                         TextInput::make('quote')->label('Quote #')->required(),
-                        TextInput::make('location')->label('Location')->required(),
-                        ])->columns(2),
-
-                        Section::make()
-                        ->schema([
+                        Select::make('customer_id')->label('Customer')->options($customers)->required(),
                         Datepicker::make('enquiry_date')->label('Enquiry Date')->required(),
                         Datepicker::make('booking_date')->label('Booking Date')->required(),
-                        Datepicker::make('callback_date')->label('Callback Date')->required(),
-                        ])->columns(3),
-
-
+                        ])->columns(2),
                         Section::make('')
                         ->schema([
-                        Select::make('job_status')
-                            ->label('Job Status')
+                            Select::make('job_status')->label('Job Status')
                             ->options([
                                 'Booking' => 'Booking',
                                 'Quote' => 'Quote',
                             ])->required(),
-                        
-                        Select::make('callback_status')
+                            Select::make('callback_status')
                             ->label('Callback Status')
                             ->options([
                                 'Booked' => 'Booked',
@@ -57,8 +48,14 @@ class CallbacksResource extends Resource
                                 'New' => 'New',
                                 'Lost' => 'Lost',
                             ])->required(),
-                        ])->columns(3),
-            ]);
+                            Datepicker::make('callback_date')->label('Callback Date')->required(),
+                            TextInput::make('location')->label('Location')->required(),
+                        ])->columns(2),
+                            ]);
+            // $customerId = $form->get('customer_id');
+            // $custdata = Customer::findOrFail($customerId);
+            // dd($custdata);
+            // $form->getModel()->customer = $customer;
     }
 
     public static function table(Table $table): Table

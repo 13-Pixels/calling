@@ -11,7 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Illuminate\Database\Eloquent\Builder;
 
-class CallbacksDue extends BaseWidget
+class CallbacksDueToday extends BaseWidget
 {
     protected static ?int $sort = 1;
     protected int | string | array $columnSpan = 'full';
