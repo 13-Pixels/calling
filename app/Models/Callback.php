@@ -16,7 +16,7 @@ class Callback extends Model
         'job_status',
         'location',
         'callback_status',
-        'customer_id'
+        'customer_id',
     ];
     public function activity()
     {
