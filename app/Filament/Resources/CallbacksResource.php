@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Datepicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use App\Models\Customer;
 
@@ -30,8 +30,8 @@ class CallbacksResource extends Resource
                     ->schema([
                         TextInput::make('quote')->label('Quote #')->required(),
                         Select::make('customer_id')->label('Customer')->options($customers)->required(),
-                        Datepicker::make('enquiry_date')->label('Enquiry Date')->required(),
-                        Datepicker::make('booking_date')->label('Booking Date')->required(),
+                        DatePicker::make('enquiry_date')->label('Enquiry Date')->required(),
+                        DatePicker::make('booking_date')->label('Booking Date')->required(),
                         ])->columns(2),
                         Section::make('')
                         ->schema([
@@ -48,7 +48,7 @@ class CallbacksResource extends Resource
                                 'New' => 'New',
                                 'Lost' => 'Lost',
                             ])->required(),
-                            Datepicker::make('callback_date')->label('Callback Date')->required(),
+                            DatePicker::make('callback_date')->label('Callback Date')->required(),
                             TextInput::make('location')->label('Location')->required(),
                         ])->columns(2),
                             ]);
