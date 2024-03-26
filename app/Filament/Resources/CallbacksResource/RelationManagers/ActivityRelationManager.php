@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Components\DatePicker;
 
 class ActivityRelationManager extends RelationManager
 {
@@ -17,7 +18,7 @@ class ActivityRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('user')->required()->maxLength(255),
-                Forms\Components\Datepicker::make('date')->required(),//->maxLength(255),
+                Forms\Components\DatePicker::make('date')->required(),//->maxLength(255),
                 Forms\Components\Select::make('type')
                             ->label('Type')
                             ->options([           
