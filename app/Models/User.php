@@ -26,6 +26,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
     ];
 
+    
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -46,8 +47,16 @@ class User extends Authenticatable implements FilamentUser
         'password' => 'hashed',
     ];
 
+    // public function canAccessPanel(Panel $panel): bool
+    // {
+    //     return str_ends_with($this->email, '@callbacks.savari.io') && $this->hasVerifiedEmail();
+    // }
     public function canAccessPanel(Panel $panel): bool
     {
-        return str_ends_with($this->email, '@callbacks.savari.io') && $this->hasVerifiedEmail();
+        if ($panel->getId() === '1') {
+            return str_ends_with($this->email, '@callbacks.savari.io') && $this->hasVerifiedEmail();
+        }
+ 
+        return true;
     }
 }
