@@ -21,6 +21,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use App\Filament\Resources\CallbacksResource\Pages;
 use App\Filament\Resources\CallbacksResource\RelationManagers;
+use Illuminate\Support\HtmlString;
 
 
 class CallbacksResource extends Resource
@@ -32,8 +33,10 @@ class CallbacksResource extends Resource
         $customers = Customer::pluck('name', 'id');
         if($form->model == 'App\Models\Callback'){
             $customer = null;
+            $job_status = null;
         }else{
             $customer = Customer::findOrFail($form->model->customer_id);
+            $job_status = $form->model->job_status;
         }
         return $form
             ->schema([
@@ -71,7 +74,7 @@ class CallbacksResource extends Resource
                 Split::make([
                     Section::make([
                         Placeholder::make('name')
-                            ->label('Booking Date & Time')//->content($customer->enquiry_date),    
+                            ->label('Booking Date & Time')    
                             ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),               
                     ]),
                     Section::make([
@@ -84,8 +87,7 @@ class CallbacksResource extends Resource
                         Placeholder::make('name')
                             ->label('Total Price')->content('123'),
                         Placeholder::make('Email')
-                            ->label('Discounted Prices')//->content($customer->name),
-                            ->content(isset($customer->name) ? $customer->name : null),
+                            ->label('Discounted Prices')->content('123'),
                     ]),
                 ])
                 ->columnSpanFull()
@@ -102,11 +104,17 @@ class CallbacksResource extends Resource
                     ->hidden(fn (string $operation): bool => $operation === 'edit'),
                 Section::make('')
                     ->schema([
+                        Split::make([
+                            Placeholder::make('Email')
+                            ->label('Job Status')
+                            ->content(new HtmlString("<strong><span style='color: " . ($job_status === CallBackEnum::BOOKING ? 'green' : ($job_status === CallBackEnum::QUOTE ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
+                    ])->hidden(fn (string $operation): bool => $operation === 'create'),
+
                         Select::make('job_status')->label('Job Status')
                         ->options([
                             'Booking' => 'Booking',
                             'Quote' => 'Quote',
-                        ])->required(),
+                        ])->required()->hidden(fn (string $operation): bool => $operation === 'edit'),
                         Select::make('callback_status')
                         ->label('Callback Status')
                         ->options([
@@ -119,9 +127,6 @@ class CallbacksResource extends Resource
                         TextInput::make('location')->label('Location')->required(),
                     ])->columns(2),
                 ]);
-            
-            //  $custdata = Customer::findOrFail($customerId);
-            //  $form->getModel()->customer = $custdata;
     }
 
     public static function table(Table $table): Table
