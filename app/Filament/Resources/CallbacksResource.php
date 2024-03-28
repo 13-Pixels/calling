@@ -29,42 +29,50 @@ class CallbacksResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static function form(Form $form): Form
     {
-        $customer = Customer::findOrFail($form->model->customer_id);
         $customers = Customer::pluck('name', 'id');
+        if($form->model == 'App\Models\Callback'){
+            $customer = null;
+        }else{
+            $customer = Customer::findOrFail($form->model->customer_id);
+        }
         return $form
             ->schema([
                 Split::make([
                     Section::make([
                         Placeholder::make('name')
                             ->label('Customer Name')
-                            ->content($customer->name),
+                            ->content(isset($customer->name) ? $customer->name : null),
                         Placeholder::make('name')
                             ->label('Customer Email')
-                            ->content($customer->email),
+                            ->content(isset($customer->email) ? $customer->email : null),
                         Placeholder::make('name')
                             ->label('Customer Phone')
-                            ->content($customer->phone),
+                            ->content(isset($customer->phone) ? $customer->phone : null),
                     ]),
                     Section::make([
                         Placeholder::make('name')
-                            ->label('Collection Address')->content($customer->address),
+                            ->label('Collection Address')
+                            ->content(isset($customer->address) ? $customer->address : null),
                         Placeholder::make('Email')
-                            ->label('Destination')->content($customer->destination),
+                            ->label('Destination')
+                            ->content(isset($customer->destination) ? $customer->destination : null),
                     ]),
                     Section::make([
                         Placeholder::make('name')
-                            ->label('Enquiry Date')->content($customer->enquiry_date),
+                            ->label('Enquiry Date')
+                            ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),
                         Placeholder::make('Email')
-                            ->label('Last Contact')->content($customer->phone),
+                            ->label('Last Contact')
+                            ->content(isset($customer->phone) ? $customer->phone : null),
                     ]),
                 ])
                 ->columnSpan(4)
                 ->hidden(fn (string $operation): bool => $operation === 'create'),
-
                 Split::make([
                     Section::make([
                         Placeholder::make('name')
-                            ->label('Booking Date & Time')->content($customer->enquiry_date),                   
+                            ->label('Booking Date & Time')//->content($customer->enquiry_date),    
+                            ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),               
                     ]),
                     Section::make([
                         Placeholder::make('name')
@@ -76,7 +84,8 @@ class CallbacksResource extends Resource
                         Placeholder::make('name')
                             ->label('Total Price')->content('123'),
                         Placeholder::make('Email')
-                            ->label('Discounted Prices')->content($customer->name),
+                            ->label('Discounted Prices')//->content($customer->name),
+                            ->content(isset($customer->name) ? $customer->name : null),
                     ]),
                 ])
                 ->columnSpanFull()
@@ -85,7 +94,7 @@ class CallbacksResource extends Resource
                 Section::make('')
                     ->schema([
                         TextInput::make('quote')->label('Quote #')->required(),
-                        //Select::make('customer_id')->label('Customer')->options($customers)->required(),
+                        Select::make('customer_id')->label('Customer')->options($customers)->required(),
                         DatePicker::make('enquiry_date')->label('Enquiry Date')->required(),
                         DatePicker::make('booking_date')->label('Booking Date')->required(),
                     ])
@@ -111,8 +120,8 @@ class CallbacksResource extends Resource
                     ])->columns(2),
                 ]);
             
-             $custdata = Customer::findOrFail($customerId);
-             $form->getModel()->customer = $custdata;
+            //  $custdata = Customer::findOrFail($customerId);
+            //  $form->getModel()->customer = $custdata;
     }
 
     public static function table(Table $table): Table
