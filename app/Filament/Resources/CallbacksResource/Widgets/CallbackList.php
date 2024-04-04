@@ -18,7 +18,7 @@ class CallbackList extends BaseWidget
         $quoteToday = Callback::whereDate('created_at', $currentDate)->where('job_status','Quote')->count();
         $bookingToday = Callback::whereDate('created_at', $currentDate)->where('job_status','Booking')->count();
         return [
-            Stat::make('Revenue Today', '123')
+            Stat::make('Total Price', '123')
                 ->description('32k increase')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([7, 2, 10, 3, 15, 4, 17])

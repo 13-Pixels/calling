@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Tables;
 use App\Models\Callback;
 use App\Models\Customer;
+use App\Models\Location;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Enums\CallBackEnum;
@@ -31,6 +32,7 @@ class CallbacksResource extends Resource
     public static function form(Form $form): Form
     {
         $customers = Customer::pluck('name', 'id');
+        $locations = Location::pluck('name','id');
         if($form->model == 'App\Models\Callback'){
             $customer = null;
             $job_status = null;
@@ -97,8 +99,8 @@ class CallbacksResource extends Resource
                     ->schema([
                         TextInput::make('quote')->label('Quote #')->required(),
                         Select::make('customer_id')->label('Customer')->options($customers)->required(),
-                        DatePicker::make('enquiry_date')->label('Enquiry Date')->required(),
-                        DatePicker::make('booking_date')->label('Booking Date')->required(),
+                        DatePicker::make('enquiry_date')->label('Enquiry Date')->required()->default(now()->toDateString()),
+                        DatePicker::make('booking_date')->label('Booking Date')->required()->default(now()->toDateString()),
                     ])
                     ->columns(2)
                     ->hidden(fn (string $operation): bool => $operation === 'edit'),
@@ -114,7 +116,7 @@ class CallbacksResource extends Resource
                         ->options([
                             'Booking' => 'Booking',
                             'Quote' => 'Quote',
-                        ])->required()->hidden(fn (string $operation): bool => $operation === 'edit'),
+                        ])->required()->default('Quote')->hidden(fn (string $operation): bool => $operation === 'edit'),
                         Select::make('callback_status')
                         ->label('Callback Status')
                         ->options([
@@ -122,9 +124,9 @@ class CallbacksResource extends Resource
                             'Pending' => 'Pending',
                             'New' => 'New',
                             'Lost' => 'Lost',
-                        ])->required(),
+                        ])->default('New')->required(),
                         DatePicker::make('callback_date')->label('Callback Date')->required(),
-                        TextInput::make('location')->label('Location')->required(),
+                        Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
                 ]);
     }
@@ -148,7 +150,7 @@ class CallbacksResource extends Resource
                     ->formatStateUsing(fn (string $state): string => __("{$state}"))
                     ->weight('bold')
                     ->searchable(),
-            TextColumn::make('location')->searchable(),
+            //TextColumn::make('location')->searchable(),
             TextColumn::make('callback_status')
                     ->color(function (string $state) {
                         return match ($state) {

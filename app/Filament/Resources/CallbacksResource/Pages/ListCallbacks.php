@@ -13,7 +13,7 @@ class ListCallbacks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label('New Call Back'),
         ];
     }
     protected function getHeaderWidgets(): array

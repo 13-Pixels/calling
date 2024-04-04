@@ -14,7 +14,7 @@ class Callback extends Model
         'booking_date',
         'callback_date',
         'job_status',
-        'location',
+        'location_id',
         'callback_status',
         'customer_id',
     ];
