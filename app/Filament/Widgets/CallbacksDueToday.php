@@ -43,7 +43,7 @@ class CallbacksDueToday extends BaseWidget
             ->sortable()
             ->label('Job Status')
             ->searchable(),
-            Tables\Columns\TextColumn::make('location')->label('Location')->searchable(),
+            //Tables\Columns\TextColumn::make('location')->label('Location')->searchable(),
             TextColumn::make('callback_status')
             ->color(function (string $state) {
                 return match ($state) {
