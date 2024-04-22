@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Tables;
 use App\Models\Callback;
 use App\Models\Customer;
+use App\Models\Location;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Enums\CallBackEnum;
@@ -96,8 +97,8 @@ class CallbacksResource extends Resource
                     ->schema([
                         TextInput::make('quote')->label('Quote #')->required(),
                         Select::make('customer_id')->label('Customer')->options($customers)->required(),
-                        DatePicker::make('enquiry_date')->label('Enquiry Date')->required(),
-                        DatePicker::make('booking_date')->label('Booking Date')->required(),
+                        DatePicker::make('enquiry_date')->label('Enquiry Date')->required()->default(now()->toDateString()),
+                        DatePicker::make('booking_date')->label('Booking Date')->required()->default(now()->toDateString()),
                     ])
                     ->columns(2)
                     ->hidden(fn(string $operation): bool => $operation === 'edit'),
@@ -123,7 +124,7 @@ class CallbacksResource extends Resource
                                 'Lost' => 'Lost',
                             ])->required(),
                         DatePicker::make('callback_date')->label('Callback Date')->required(),
-                        TextInput::make('location')->label('Location')->required(),
+                        Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
             ]);
     }
