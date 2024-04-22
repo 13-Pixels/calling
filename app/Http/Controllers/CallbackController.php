@@ -21,7 +21,7 @@ class CallbackController extends Controller
     public function show($id)
     {
         try {
-            $callback = Callback::with('customer','activity')->findOrFail($id);//->with('customer');
+            $callback = Callback::with('customer', 'activity')->findOrFail($id);//->with('customer');
             return response()->json(['success' => true, 'data' => $callback], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Callback not found.'], 404);
@@ -33,14 +33,11 @@ class CallbackController extends Controller
         $jobStatusEnum = ['Booking', 'Quote'];
         $callbackStatusEnum = ['Booked', 'Pending', 'New', 'Lost'];
         $validator = Validator::make($request->all(), [
-            'quote' => 'required|integer',
-            'customer_id' => 'required|integer',
+            'quote' => 'required',
             'enquiry_date' => 'required|date_format:Y-m-d',
             'booking_date' => 'required|date_format:Y-m-d',
-            'callback_date' => 'required|date_format:Y-m-d',
-            'job_status' => 'required|in:' . implode(',', $jobStatusEnum),
-            'location' => 'required',
-            'callback_status' => 'required|in:' . implode(',', $callbackStatusEnum),
+            'job_status' => 'required',
+            'customer_id' => 'required|integer',
         ]);
 
         // Check if the validation fails

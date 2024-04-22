@@ -32,13 +32,11 @@ class CallbacksResource extends Resource
     public static function form(Form $form): Form
     {
         $customers = Customer::pluck('name', 'id');
-        $locations = Location::pluck('name','id');
-        if($form->model == 'App\Models\Callback'){
+        if ($form->model == 'App\Models\Callback') {
             $customer = null;
             $job_status = null;
-        }else{
+        } else {
             $customer = Customer::findOrFail($form->model->customer_id);
-            $job_status = $form->model->job_status;
         }
         return $form
             ->schema([
@@ -71,13 +69,13 @@ class CallbacksResource extends Resource
                             ->content(isset($customer->phone) ? $customer->phone : null),
                     ]),
                 ])
-                ->columnSpan(4)
-                ->hidden(fn (string $operation): bool => $operation === 'create'),
+                    ->columnSpan(4)
+                    ->hidden(fn(string $operation): bool => $operation === 'create'),
                 Split::make([
                     Section::make([
                         Placeholder::make('name')
-                            ->label('Booking Date & Time')    
-                            ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),               
+                            ->label('Booking Date & Time')
+                            ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),
                     ]),
                     Section::make([
                         Placeholder::make('name')
@@ -92,8 +90,8 @@ class CallbacksResource extends Resource
                             ->label('Discounted Prices')->content('123'),
                     ]),
                 ])
-                ->columnSpanFull()
-                ->hidden(fn (string $operation): bool => $operation === 'create'),
+                    ->columnSpanFull()
+                    ->hidden(fn(string $operation): bool => $operation === 'create'),
 
                 Section::make('')
                     ->schema([
@@ -103,55 +101,55 @@ class CallbacksResource extends Resource
                         DatePicker::make('booking_date')->label('Booking Date')->required()->default(now()->toDateString()),
                     ])
                     ->columns(2)
-                    ->hidden(fn (string $operation): bool => $operation === 'edit'),
+                    ->hidden(fn(string $operation): bool => $operation === 'edit'),
                 Section::make('')
                     ->schema([
                         Split::make([
                             Placeholder::make('Email')
-                            ->label('Job Status')
-                            ->content(new HtmlString("<strong><span style='color: " . ($job_status === CallBackEnum::BOOKING ? 'green' : ($job_status === CallBackEnum::QUOTE ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
-                    ])->hidden(fn (string $operation): bool => $operation === 'create'),
+                                ->label('Job Status')
+                                ->content(new HtmlString("<strong><span style='color: " . ($job_status === CallBackEnum::BOOKING ? 'green' : ($job_status === CallBackEnum::QUOTE ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
+                        ])->hidden(fn(string $operation): bool => $operation === 'create'),
 
                         Select::make('job_status')->label('Job Status')
-                        ->options([
-                            'Booking' => 'Booking',
-                            'Quote' => 'Quote',
-                        ])->required()->default('Quote')->hidden(fn (string $operation): bool => $operation === 'edit'),
+                            ->options([
+                                'Booking' => 'Booking',
+                                'Quote' => 'Quote',
+                            ])->required()->hidden(fn(string $operation): bool => $operation === 'edit'),
                         Select::make('callback_status')
-                        ->label('Callback Status')
-                        ->options([
-                            'Booked' => 'Booked',
-                            'Pending' => 'Pending',
-                            'New' => 'New',
-                            'Lost' => 'Lost',
-                        ])->default('New')->required(),
+                            ->label('Callback Status')
+                            ->options([
+                                'Booked' => 'Booked',
+                                'Pending' => 'Pending',
+                                'New' => 'New',
+                                'Lost' => 'Lost',
+                            ])->required(),
                         DatePicker::make('callback_date')->label('Callback Date')->required(),
                         Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
-                ]);
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->columns([
-            TextColumn::make('quote')->searchable(),
-            TextColumn::make('enquiry_date')->searchable(),
-            TextColumn::make('booking_date')->searchable(),
-            TextColumn::make('callback_date')->searchable(),
-            TextColumn::make('job_status')->searchable(),
-            TextColumn::make('job_status')
+            ->columns([
+                TextColumn::make('quote')->searchable(),
+                TextColumn::make('enquiry_date')->searchable(),
+                TextColumn::make('booking_date')->searchable(),
+                TextColumn::make('callback_date')->searchable(),
+                TextColumn::make('job_status')->searchable(),
+                TextColumn::make('job_status')
                     ->color(function (string $state) {
                         return match ($state) {
                             CallBackEnum::BOOKING => 'success',
                             CallBackEnum::QUOTE => 'warning',
                         };
                     })
-                    ->formatStateUsing(fn (string $state): string => __("{$state}"))
+                    ->formatStateUsing(fn(string $state): string => __("{$state}"))
                     ->weight('bold')
                     ->searchable(),
-            //TextColumn::make('location')->searchable(),
-            TextColumn::make('callback_status')
+                TextColumn::make('location')->searchable(),
+                TextColumn::make('callback_status')
                     ->color(function (string $state) {
                         return match ($state) {
                             CallBackEnum::BOOKED => 'success',
@@ -160,7 +158,7 @@ class CallbacksResource extends Resource
                             CallBackEnum::LOST => 'danger',
                         };
                     })
-                    ->formatStateUsing(fn (string $state): string => __("{$state}"))
+                    ->formatStateUsing(fn(string $state): string => __("{$state}"))
                     ->weight('bold')
                     ->searchable(),
             ])
@@ -172,7 +170,7 @@ class CallbacksResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
