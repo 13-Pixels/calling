@@ -29,7 +29,6 @@ class CallbackController extends Controller
     }
     public function store(Request $request)
     {
-        // Define enum values
         $validator = Validator::make($request->all(), [
             'quote' => 'required',
             'enquiry_date' => 'required|date_format:Y-m-d',
