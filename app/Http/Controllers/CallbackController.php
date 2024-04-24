@@ -30,14 +30,14 @@ class CallbackController extends Controller
     public function store(Request $request)
     {
         // Define enum values
-        $jobStatusEnum = ['Booking', 'Quote'];
-        $callbackStatusEnum = ['Booked', 'Pending', 'New', 'Lost'];
         $validator = Validator::make($request->all(), [
             'quote' => 'required',
             'enquiry_date' => 'required|date_format:Y-m-d',
             'booking_date' => 'required|date_format:Y-m-d',
             'job_status' => 'required',
-            'customer_id' => 'required|integer',
+            'customer_id' => 'required',
+            'pick_up' => 'required',
+            'drop_off' => 'required',
         ]);
 
         // Check if the validation fails
