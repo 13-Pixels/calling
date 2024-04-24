@@ -15,7 +15,7 @@ class Callback extends Model
         'callback_date',
         'job_status',
         'callback_status',
-        'customer_id',
+        'customer',
         'pick_up',
         'drop_off',
         'via',

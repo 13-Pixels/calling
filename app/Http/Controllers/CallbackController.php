@@ -34,7 +34,7 @@ class CallbackController extends Controller
             'enquiry_date' => 'required|date_format:Y-m-d',
             'booking_date' => 'required|date_format:Y-m-d',
             'job_status' => 'required',
-            'customer_id' => 'required',
+            'customer' => 'required',
             'pick_up' => 'required',
             'drop_off' => 'required',
         ]);
