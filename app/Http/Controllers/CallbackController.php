@@ -38,7 +38,6 @@ class CallbackController extends Controller
             'customer_id' => 'required',
             'pick_up' => 'required',
             'drop_off' => 'required',
-            'via' => 'required',
         ]);
 
         // Check if the validation fails
