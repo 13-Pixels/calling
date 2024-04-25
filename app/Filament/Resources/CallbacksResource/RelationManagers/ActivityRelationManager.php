@@ -21,7 +21,7 @@ class ActivityRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('user')
                 ->label('User')
-                ->disabled()
+                ->readOnly()
                 ->default($authenticatedUser->name),
                 Forms\Components\DatePicker::make('date')->required()->default(now()->toDateString()),
                 Forms\Components\Select::make('type')
