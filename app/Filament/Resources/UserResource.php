@@ -30,8 +30,8 @@ class UserResource extends Resource
                 TextInput::make('name')->label('Name')->required(),
                 TextInput::make('email')
                     ->label('Email')
-                    ->required()
-                    ->unique('users', 'email'), // Unique email validation
+                    ->required(),
+                    // ->unique('users', 'email'), // Unique email validation
                     TextInput::make('password')
                     ->label('Password')
                     ->required()

@@ -32,12 +32,12 @@ class CallbacksDueToday extends BaseWidget
             Tables\Columns\TextColumn::make('booking_date')->label('Booking Date')->searchable(),
             Tables\Columns\TextColumn::make('callback_date')->label('Callback Date')->searchable(),
             TextColumn::make('job_status')
-            ->color(function (string $state) {
-                return match ($state) {
-                    CallBackEnum::BOOKING => 'success',
-                    CallBackEnum::QUOTE => 'warning',
-                };
-            })
+            // ->color(function (string $state) {
+            //     return match ($state) {
+            //         // CallBackEnum::BOOKING => 'success',
+            //         // CallBackEnum::QUOTE => 'warning',
+            //     };
+            // })
             ->formatStateUsing(fn (string $state): string => __("{$state}"))
             ->weight('bold')
             ->sortable()
@@ -45,14 +45,14 @@ class CallbacksDueToday extends BaseWidget
             ->searchable(),
             //Tables\Columns\TextColumn::make('location')->label('Location')->searchable(),
             TextColumn::make('callback_status')
-            ->color(function (string $state) {
-                return match ($state) {
-                    CallBackEnum::BOOKED => 'success',
-                    CallBackEnum::PENDING => 'warning',
-                    CallBackEnum::NEW => 'gray',
-                    CallBackEnum::LOST => 'danger',
-                };
-            })
+            // ->color(function (string $state) {
+            //     return match ($state) {
+            //         CallBackEnum::BOOKED => 'success',
+            //         CallBackEnum::PENDING => 'warning',
+            //         CallBackEnum::NEW => 'gray',
+            //         CallBackEnum::LOST => 'danger',
+            //     };
+            // })
             ->formatStateUsing(fn (string $state): string => __("{$state}"))
             ->weight('bold')
             ->label('Callback Status')

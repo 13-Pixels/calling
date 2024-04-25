@@ -36,35 +36,35 @@ class CallbacksResource extends Resource
             $customer = null;
             $job_status = null;
         } else {
-            $customer = Customer::findOrFail($form->model->customer_id);
+            $customer = Customer::findOrFail($form->model->customer);
         }
         return $form
             ->schema([
                 Split::make([
                     Section::make([
-                        Placeholder::make('name')
+                        Placeholder::make('customer_name')
                             ->label('Customer Name')
                             ->content(isset($customer->name) ? $customer->name : null),
-                        Placeholder::make('name')
+                        Placeholder::make('customer_email')
                             ->label('Customer Email')
                             ->content(isset($customer->email) ? $customer->email : null),
-                        Placeholder::make('name')
+                        Placeholder::make('customer_phone')
                             ->label('Customer Phone')
                             ->content(isset($customer->phone) ? $customer->phone : null),
                     ]),
                     Section::make([
-                        Placeholder::make('name')
+                        Placeholder::make('pick_up')
                             ->label('Collection Address')
                             ->content(isset($customer->address) ? $customer->address : null),
-                        Placeholder::make('Email')
+                        Placeholder::make('drop_off')
                             ->label('Destination')
                             ->content(isset($customer->destination) ? $customer->destination : null),
                     ]),
                     Section::make([
-                        Placeholder::make('name')
+                        Placeholder::make('enquiery')
                             ->label('Enquiry Date')
                             ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),
-                        Placeholder::make('Email')
+                        Placeholder::make('last_contact')
                             ->label('Last Contact')
                             ->content(isset($customer->phone) ? $customer->phone : null),
                     ]),
@@ -73,20 +73,20 @@ class CallbacksResource extends Resource
                     ->hidden(fn(string $operation): bool => $operation === 'create'),
                 Split::make([
                     Section::make([
-                        Placeholder::make('name')
+                        Placeholder::make('booking')
                             ->label('Booking Date & Time')
                             ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),
                     ]),
                     Section::make([
-                        Placeholder::make('name')
+                        Placeholder::make('passengers')
                             ->label('Number of Passengers')->content('3'),
-                        Placeholder::make('Email')
+                        Placeholder::make('vehicle_type')
                             ->label('Vehicle Type')->content('xyz'),
                     ]),
                     Section::make([
-                        Placeholder::make('name')
+                        Placeholder::make('total')
                             ->label('Total Price')->content('123'),
-                        Placeholder::make('Email')
+                        Placeholder::make('discount')
                             ->label('Discounted Prices')->content('123'),
                     ]),
                 ])
@@ -96,7 +96,7 @@ class CallbacksResource extends Resource
                 Section::make('')
                     ->schema([
                         TextInput::make('quote')->label('Quote #')->required(),
-                        Select::make('customer_id')->label('Customer')->options($customers)->required(),
+                        Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
                         DatePicker::make('enquiry_date')->label('Enquiry Date')->required()->default(now()->toDateString()),
                         DatePicker::make('booking_date')->label('Booking Date')->required()->default(now()->toDateString()),
                     ])
@@ -105,26 +105,29 @@ class CallbacksResource extends Resource
                 Section::make('')
                     ->schema([
                         Split::make([
-                            Placeholder::make('Email')
+                            Placeholder::make('job_status')
                                 ->label('Job Status')
-                                ->content(new HtmlString("<strong><span style='color: " . ($job_status === CallBackEnum::BOOKING ? 'green' : ($job_status === CallBackEnum::QUOTE ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
+                                ->content(fn (Callback $record): string => $record->job_status)
+                                // ->color(['booking' => fn (?Callback $record): string => $record ? 'primary' : 'success']),
+                                    // new HtmlString("<strong><span style='color: " . ($job_status === 'booking' ? 'green' : ($job_status === 'quote' ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
                         ])->hidden(fn(string $operation): bool => $operation === 'create'),
 
                         Select::make('job_status')->label('Job Status')
                             ->options([
-                                'Booking' => 'Booking',
-                                'Quote' => 'Quote',
-                            ])->required()->hidden(fn(string $operation): bool => $operation === 'edit'),
+                                'booking' => 'Booking',
+                                'quote' => 'Quote',
+                            ])->required()
+                            ->hidden(fn(string $operation): bool => $operation === 'edit'),
                         Select::make('callback_status')
                             ->label('Callback Status')
                             ->options([
-                                'Booked' => 'Booked',
-                                'Pending' => 'Pending',
-                                'New' => 'New',
-                                'Lost' => 'Lost',
+                                'booked' => 'Booked',
+                                'pending' => 'Pending',
+                                'new' => 'New',
+                                'lost' => 'Lost',
                             ])->required(),
                         DatePicker::make('callback_date')->label('Callback Date')->required(),
-                        Select::make('location_id')->label('Location')->options($locations)->required(),
+                        // Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
             ]);
     }
@@ -138,24 +141,24 @@ class CallbacksResource extends Resource
                 TextColumn::make('booking_date')->searchable(),
                 TextColumn::make('callback_date')->searchable(),
                 TextColumn::make('job_status')->searchable(),
-                TextColumn::make('job_status')
-                    ->color(function (string $state) {
-                        return match ($state) {
-                            CallBackEnum::BOOKING => 'success',
-                            CallBackEnum::QUOTE => 'warning',
-                        };
-                    })
-                    ->formatStateUsing(fn(string $state): string => __("{$state}"))
-                    ->weight('bold')
-                    ->searchable(),
+                // TextColumn::make('job_status')
+                //     ->color(function (string $state) {
+                //         return match ($state) {
+                //            'booking' => 'success',
+                //             'quote' => 'warning',
+                //         };
+                //     })
+                //     ->formatStateUsing(fn(string $state): string => __("{$state}"))
+                //     ->weight('bold')
+                //     ->searchable(),
                 TextColumn::make('location')->searchable(),
                 TextColumn::make('callback_status')
                     ->color(function (string $state) {
                         return match ($state) {
-                            CallBackEnum::BOOKED => 'success',
-                            CallBackEnum::PENDING => 'warning',
-                            CallBackEnum::NEW => 'gray',
-                            CallBackEnum::LOST => 'danger',
+                            'booked' => 'success',
+                            'pending' => 'warning',
+                            'new' => 'gray',
+                            'lost' => 'danger',
                         };
                     })
                     ->formatStateUsing(fn(string $state): string => __("{$state}"))
