@@ -99,6 +99,7 @@ class CallbacksResource extends Resource
                         // Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
                         TextInput::make('customer_name')->label('Customer name'),
                         TextInput::make('customer')->label('Customer Email')->required(),
+                        TextInput::make('customer_email')->label('Customer Email')->required(),
                         TextInput::make('customer_phone')->label('Customer Phone'),
                         DatePicker::make('enquiry_date')->label('Enquiry Date')->required()->default(now()->toDateString()),
                         DatePicker::make('booking_date')->label('Booking Date')->required(),
