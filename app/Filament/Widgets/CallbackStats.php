@@ -16,27 +16,12 @@ class CallbackStats extends BaseWidget
 
     protected function getStats(): array
     {
-        $currentDate = Carbon::today();
-        $quote = Callback::where('job_status','Quote')->count();
-        $booking = Callback::where('job_status','Booking')->count();
+        $quoteToday = Callback::whereDate('created_at', today())->where('job_status','Quote')->count();
+        $bookingToday = Callback::whereDate('created_at', today())->where('job_status','Booking')->count();
         return [
-            Stat::make('Revenue', '123')
-                ->description('32k increase')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('success'),
-
-            Stat::make('New Quotes', $quote)
-                ->description('7% increase')
-                ->descriptionIcon('heroicon-m-arrow-trending-down')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('danger'),
-
-            Stat::make('New Bookings', $booking)
-                ->description('3% increase')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chart([7, 2, 10, 3, 15, 4, 17])
-                ->color('success'),
-        ];
+            Stat::make('Today Total', '123'),
+            Stat::make('Today Quotes', $quoteToday),
+            Stat::make('New Bookings', $bookingToday)
+        ];    
     }
 }
