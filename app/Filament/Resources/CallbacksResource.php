@@ -2,27 +2,33 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
 use Filament\Tables;
 use App\Models\Callback;
 use App\Models\Customer;
 use App\Models\Location;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+
 use App\Enums\CallBackEnum;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
+use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Split;
+use Illuminate\Support\Facades\Http;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\CallbacksResource\Pages;
 use App\Filament\Resources\CallbacksResource\RelationManagers;
-use Illuminate\Support\HtmlString;
 
 
 class CallbacksResource extends Resource
@@ -31,6 +37,8 @@ class CallbacksResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static function form(Form $form): Form
     {
+
+        
         // $customers = Customer::pluck('name', 'id');
         // if ($form->model == 'App\Models\Callback') {
         //     $customer = null;
@@ -92,10 +100,37 @@ class CallbacksResource extends Resource
                 // ])
                 //     ->columnSpanFull()
                 //     ->hidden(fn(string $operation): bool => $operation === 'create'),
-
+           
                 Section::make('')
                     ->schema([
-                        TextInput::make('quote')->label('Quote')->required(),
+                        TextInput::make('quote')->label('Quote')
+                        ->suffixAction(fn ($state, $set) => Action::make('Fetch')
+                        ->button()
+                        ->action(function () use ($state, $set) {
+                            if (blank($state))
+                                {
+                                    Notification::make()
+                                    ->title('Please enter number')
+                                    ->danger()
+                                    ->send();                                
+                                }
+
+                                try {
+                                $http = new Http();
+                                
+                                    $data =Http::get('https://callbacks.savari.io/api/callbacks')->json();
+                                    //  dd($data['callbacks'][0]['customer_name']);
+                            
+                                } catch (RequestException $e) {
+                                    Filament::notify('danger', 'Unable to find the country');
+                                    return;
+                                }
+                                
+                        $set('customer_name', $data['callbacks'][0]['customer_name'] ?? null);
+                        $set('customer_email', $data['customer_email'] ?? null);
+                            })
+                        ),
+
                         // Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
                         TextInput::make('customer_name')->label('Customer name'),
                         TextInput::make('customer_email')->label('Customer Email')->required(),

@@ -8,16 +8,24 @@ use Illuminate\Support\Facades\Validator;
 
 class CallbackController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $callbacks = Callback::all();
-            return response()->json(['success' => true, 'callbacks' => $callbacks], 200);
-        } catch (\Exception $e) {
+           
+                try {
+                    if (!$request->quote) {
+                        $callbacks = Callback::all();
+                        return response()->json(['success' => true, 'callbacks' => $callbacks], 200);
+                
+            }else{
+                $callbacks = Callback::where('quote', $request->quote)->first();
+                return response()->json(['success' => true, 'callbacks' => $callbacks], 200);
+            }
+        }
+        catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch Callback.'], 500);
         }
     }
-
+       
     public function show($id)
     {
         try {
@@ -49,6 +57,6 @@ class CallbackController extends Controller
             return response()->json(['success' => true, 'message' => 'Callback created successfully.', 'data' => $callback], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create Callback.'], 500);
-        }
+        }   
     }
 }
