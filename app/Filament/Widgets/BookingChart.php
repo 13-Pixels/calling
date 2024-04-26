@@ -2,6 +2,9 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Callback;
+use Flowframe\Trend\Trend;
+use Flowframe\Trend\TrendValue;
 use Filament\Widgets\ChartWidget;
 
 class BookingChart extends ChartWidget
@@ -14,14 +17,23 @@ class BookingChart extends ChartWidget
 
     protected function getData(): array
     {
+        // Totals per month
+        $quotes = Trend::query(Callback::where('quote', 'booking'))
+        ->between(
+            start: now()->startOfYear(),
+            end: now(),
+        )
+        ->perMonth()
+        ->count();
+
         return [
             'datasets' => [
                 [
-                    'label' => 'Bookings',
-                    'data' => [0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89],
+                    'label' => 'Monthly Quotes',
+                    'data' => $quotes->map(fn (TrendValue $value) => $value->aggregate),
                 ],
             ],
-            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'labels' => $quotes->map(fn (TrendValue $value) => $value->date),
         ];
     }
 

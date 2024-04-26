@@ -163,7 +163,7 @@ class CallbacksResource extends Resource
                         Select::make('job_status')->label('Job Status')
                             ->options([
                                 'booking' => 'Booking',
-                                'quote' => 'Quote',
+                                'pending_quote' => 'Pending Quote',
                             ])->required(),
                             // ->hidden(fn(string $operation): bool => $operation === 'edit'),
                         Select::make('callback_status')
@@ -180,6 +180,8 @@ class CallbacksResource extends Resource
                         TextInput::make('pick_up')->label('Pick Up')->required(),
                         TextInput::make('drop_off')->label('Drop Off')->required(),
                         TextInput::make('via')->label('via'),
+                        TextInput::make('total')->label('Total Price')->readOnly(),
+                        TextInput::make('discount')->label('Discount Price'),
                         // Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
             ]);

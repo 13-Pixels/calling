@@ -21,6 +21,8 @@ class Callback extends Model
         'pick_up',
         'drop_off',
         'via',
+        'total',
+        'discount',
     ];
     public function activity()
     {
