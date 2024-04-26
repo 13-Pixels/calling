@@ -180,7 +180,7 @@ class CallbacksResource extends Resource
                         TextInput::make('pick_up')->label('Pick Up')->required(),
                         TextInput::make('drop_off')->label('Drop Off')->required(),
                         TextInput::make('via')->label('via'),
-                        TextInput::make('total')->label('Total Price')->readOnly(),
+                        TextInput::make('total')->label('Total Price'),
                         TextInput::make('discount')->label('Discount Price'),
                         // Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
