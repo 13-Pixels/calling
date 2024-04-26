@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('callbacks', function (Blueprint $table) {
             $table->dropForeign(['customer_id']);
             $table->dropColumn('customer_id');
-            $table->string('customer');
+            $table->string('customer_email')->after('id');
         });
     }
 
@@ -25,7 +25,7 @@ return new class extends Migration
     {
         Schema::table('callbacks', function (Blueprint $table) {
             $table->foreignId('customer_id')->constrained()->casecadeOnDelete();
-            $table->dropColumn('customer');
+            $table->dropColumn('customer_email');
 
         });
     }
