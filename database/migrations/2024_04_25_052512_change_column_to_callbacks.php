@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('job_status')->nullable()->change();
             $table->string('pick_up')->nullable()->change();
             $table->string('drop_off')->nullable()->change();
-            $table->string('customer_name')->after('id')->nullable();
+            $table->string('customer_name')->after('customer_email')->nullable();
             $table->string('customer_phone')->after('customer_name')->nullable();
         });
     }
