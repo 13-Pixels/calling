@@ -31,93 +31,96 @@ class CallbacksResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static function form(Form $form): Form
     {
-        $customers = Customer::pluck('name', 'id');
-        if ($form->model == 'App\Models\Callback') {
-            $customer = null;
-            $job_status = null;
-        } else {
-            $customer = Customer::findOrFail($form->model->customer);
-        }
+        // $customers = Customer::pluck('name', 'id');
+        // if ($form->model == 'App\Models\Callback') {
+        //     $customer = null;
+        //     $job_status = null;
+        // } else {
+        //     $customer = Customer::findOrFail($form->model->customer);
+        // }
         return $form
             ->schema([
-                Split::make([
-                    Section::make([
-                        Placeholder::make('customer_name')
-                            ->label('Customer Name')
-                            ->content(isset($customer->name) ? $customer->name : null),
-                        Placeholder::make('customer_email')
-                            ->label('Customer Email')
-                            ->content(isset($customer->email) ? $customer->email : null),
-                        Placeholder::make('customer_phone')
-                            ->label('Customer Phone')
-                            ->content(isset($customer->phone) ? $customer->phone : null),
-                    ]),
-                    Section::make([
-                        Placeholder::make('pick_up')
-                            ->label('Collection Address')
-                            ->content(isset($customer->address) ? $customer->address : null),
-                        Placeholder::make('drop_off')
-                            ->label('Destination')
-                            ->content(isset($customer->destination) ? $customer->destination : null),
-                    ]),
-                    Section::make([
-                        Placeholder::make('enquiery')
-                            ->label('Enquiry Date')
-                            ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),
-                        Placeholder::make('last_contact')
-                            ->label('Last Contact')
-                            ->content(isset($customer->phone) ? $customer->phone : null),
-                    ]),
-                ])
-                    ->columnSpan(4)
-                    ->hidden(fn(string $operation): bool => $operation === 'create'),
-                Split::make([
-                    Section::make([
-                        Placeholder::make('booking')
-                            ->label('Booking Date & Time')
-                            ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),
-                    ]),
-                    Section::make([
-                        Placeholder::make('passengers')
-                            ->label('Number of Passengers')->content('3'),
-                        Placeholder::make('vehicle_type')
-                            ->label('Vehicle Type')->content('xyz'),
-                    ]),
-                    Section::make([
-                        Placeholder::make('total')
-                            ->label('Total Price')->content('123'),
-                        Placeholder::make('discount')
-                            ->label('Discounted Prices')->content('123'),
-                    ]),
-                ])
-                    ->columnSpanFull()
-                    ->hidden(fn(string $operation): bool => $operation === 'create'),
+                // Split::make([
+                //     Section::make([
+                //         Placeholder::make('customer_name')
+                //             ->label('Customer Name')
+                //             // ->content(isset($customer->name) ? $customer->name : null),
+                //         Placeholder::make('customer_email')
+                //             ->label('Customer Email')
+                //             // ->content(isset($customer->email) ? $customer->email : null),
+                //         Placeholder::make('customer_phone')
+                //             ->label('Customer Phone')
+                //             // ->content(isset($customer->phone) ? $customer->phone : null),
+                //     ]),
+                //     Section::make([
+                //         Placeholder::make('pick_up')
+                //             ->label('Collection Address')
+                //             ->content(isset($customer->address) ? $customer->address : null),
+                //         Placeholder::make('drop_off')
+                //             ->label('Destination')
+                //             ->content(isset($customer->destination) ? $customer->destination : null),
+                //     ]),
+                //     Section::make([
+                //         Placeholder::make('enquiery')
+                //             ->label('Enquiry Date')
+                //             ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),
+                //         Placeholder::make('last_contact')
+                //             ->label('Last Contact')
+                //             ->content(isset($customer->phone) ? $customer->phone : null),
+                //     ]),
+                // ])
+                //     ->columnSpan(4)
+                //     ->hidden(fn(string $operation): bool => $operation === 'create'),
+                // Split::make([
+                //     Section::make([
+                //         Placeholder::make('booking')
+                //             ->label('Booking Date & Time')
+                //             ->content(isset($customer->enquiry_date) ? $customer->enquiry_date : null),
+                //     ]),
+                //     Section::make([
+                //         Placeholder::make('passengers')
+                //             ->label('Number of Passengers')->content('3'),
+                //         Placeholder::make('vehicle_type')
+                //             ->label('Vehicle Type')->content('xyz'),
+                //     ]),
+                //     Section::make([
+                //         Placeholder::make('total')
+                //             ->label('Total Price')->content('123'),
+                //         Placeholder::make('discount')
+                //             ->label('Discounted Prices')->content('123'),
+                //     ]),
+                // ])
+                //     ->columnSpanFull()
+                //     ->hidden(fn(string $operation): bool => $operation === 'create'),
 
                 Section::make('')
                     ->schema([
-                        TextInput::make('quote')->label('Quote #')->required(),
-                        Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
+                        TextInput::make('quote')->label('Quote')->required(),
+                        // Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
+                        TextInput::make('customer_name')->label('Customer name'),
+                        TextInput::make('customer')->label('Customer Email')->required(),
+                        TextInput::make('customer_phone')->label('Customer Phone'),
                         DatePicker::make('enquiry_date')->label('Enquiry Date')->required()->default(now()->toDateString()),
-                        DatePicker::make('booking_date')->label('Booking Date')->required()->default(now()->toDateString()),
+                        DatePicker::make('booking_date')->label('Booking Date')->required(),
                     ])
-                    ->columns(2)
-                    ->hidden(fn(string $operation): bool => $operation === 'edit'),
+                    ->columns(2),
+                    // ->hidden(fn(string $operation): bool => $operation === 'edit'),
                 Section::make('')
                     ->schema([
-                        Split::make([
-                            Placeholder::make('job_status')
-                                ->label('Job Status')
-                                ->content(fn (Callback $record): string => $record->job_status)
-                                // ->color(['booking' => fn (?Callback $record): string => $record ? 'primary' : 'success']),
-                                    // new HtmlString("<strong><span style='color: " . ($job_status === 'booking' ? 'green' : ($job_status === 'quote' ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
-                        ])->hidden(fn(string $operation): bool => $operation === 'create'),
+                        // Split::make([
+                        //     Placeholder::make('job_status')
+                        //         ->label('Job Status')
+                        //         ->content(fn (Callback $record): string => $record->job_status)
+                        //         // ->color(['booking' => fn (?Callback $record): string => $record ? 'primary' : 'success']),
+                        //             // new HtmlString("<strong><span style='color: " . ($job_status === 'booking' ? 'green' : ($job_status === 'quote' ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
+                        // ])->hidden(fn(string $operation): bool => $operation === 'create'),
 
                         Select::make('job_status')->label('Job Status')
                             ->options([
                                 'booking' => 'Booking',
                                 'quote' => 'Quote',
-                            ])->required()
-                            ->hidden(fn(string $operation): bool => $operation === 'edit'),
+                            ])->required(),
+                            // ->hidden(fn(string $operation): bool => $operation === 'edit'),
                         Select::make('callback_status')
                             ->label('Callback Status')
                             ->options([
@@ -127,6 +130,9 @@ class CallbacksResource extends Resource
                                 'lost' => 'Lost',
                             ])->required(),
                         DatePicker::make('callback_date')->label('Callback Date')->required(),
+                        TextInput::make('pick_up')->label('Pick Up')->required(),
+                        TextInput::make('drop_off')->label('Drop Off')->required(),
+                        TextInput::make('via')->label('via'),
                         // Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
             ]);
@@ -170,6 +176,7 @@ class CallbacksResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
