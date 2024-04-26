@@ -104,9 +104,9 @@ class CallbacksResource extends Resource
                 Section::make('')
                     ->schema([
                         TextInput::make('quote')->label('Quote')
-                        ->suffixAction(fn ($state, $set) => Action::make('Fetch')
+                        ->suffixAction(Action::make('Fetch')
                         ->button()
-                        ->action(function () use ($state, $set) {
+                        ->action(function($state, $set, $get) {
                             if (blank($state))
                                 {
                                     Notification::make()
@@ -118,16 +118,26 @@ class CallbacksResource extends Resource
                                 try {
                                 $http = new Http();
                                 
-                                    $data =Http::get('https://callbacks.savari.io/api/callbacks')->json();
-                                    //  dd($data['callbacks'][0]['customer_name']);
+                                    $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
+                                
+                                    //  dd($data['callbacks']['customer_name']);
                             
                                 } catch (RequestException $e) {
                                     Filament::notify('danger', 'Unable to find the country');
                                     return;
                                 }
                                 
-                        $set('customer_name', $data['callbacks'][0]['customer_name'] ?? null);
-                        $set('customer_email', $data['customer_email'] ?? null);
+                        $set('customer_name', $data['callbacks']['customer_name'] ?? null);
+                        $set('customer_email', $data['callbacks']['customer_email'] ?? null);
+                        $set('customer_phone', $data['callbacks']['customer_phone'] ?? null);
+                        $set('enquiry_date', $data['callbacks']['enquiry_date'] ?? null);
+                        $set('booking_date', $data['callbacks']['booking_date'] ?? null);
+                        $set('job_status', $data['callbacks']['job_status'] ?? null);
+                        $set('callback_status', $data['callbacks']['callback_status'] ?? null);
+                        $set('callback_date', $data['callbacks']['callback_date'] ?? null);
+                        $set('pick_up', $data['callbacks']['pick_up'] ?? null);
+                        $set('drop_off', $data['callbacks']['drop_off'] ?? null);
+                        $set('via', $data['callbacks']['via'] ?? null);
                             })
                         ),
 
@@ -160,10 +170,12 @@ class CallbacksResource extends Resource
                             ->label('Callback Status')
                             ->options([
                                 'booked' => 'Booked',
-                                'pending' => 'Pending',
+                                'pending_quote' => 'Pending Quote',
                                 'new' => 'New',
                                 'lost' => 'Lost',
-                            ])->required(),
+                            ])
+                            ->required(),
+                            // ->default(''),
                         DatePicker::make('callback_date')->label('Callback Date')->required(),
                         TextInput::make('pick_up')->label('Pick Up')->required(),
                         TextInput::make('drop_off')->label('Drop Off')->required(),
