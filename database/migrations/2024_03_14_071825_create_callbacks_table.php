@@ -12,15 +12,17 @@ return new class extends Migration {
     {
         Schema::create('callbacks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained()->casecadeOnDelete();
-            $table->string('quote');
-            $table->date('enquiry_date');
-            $table->date('booking_date');
+            $table->string('customer_name')->nullable();
+            $table->string('customer_phone')->nullable();
+            $table->string('customer_email')->nullable();
+            $table->string('quote')->nullable();
+            $table->date('enquiry_date')->nullable();
+            $table->date('booking_date')->nullable();
             $table->date('callback_date')->nullable();
-            $table->string('job_status');
+            $table->string('job_status')->nullable();
             $table->string('callback_status')->nullable();
-            $table->string('pick_up');
-            $table->string('drop_off');
+            $table->string('pick_up')->nullable();
+            $table->string('drop_off')->nullable();
             $table->string('via')->nullable();
             $table->timestamps();
         });
