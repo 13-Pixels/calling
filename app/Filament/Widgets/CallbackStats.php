@@ -16,10 +16,11 @@ class CallbackStats extends BaseWidget
 
     protected function getStats(): array
     {
-        $quoteToday = Callback::whereDate('created_at', today())->where('job_status','Quote')->count();
-        $bookingToday = Callback::whereDate('created_at', today())->where('job_status','Booking')->count();
+        $quoteToday = Callback::whereDate('created_at', today())->where('job_status','pending_quote')->count();
+        $bookingToday = Callback::whereDate('created_at', today())->where('job_status','booking')->count();
+        $totalToday = Callback::sum('total');
         return [
-            Stat::make('Today Total', '0'),
+            Stat::make('Today Total', $totalToday),
             Stat::make('Today Quotes', $quoteToday),
             Stat::make('Today Bookings', $bookingToday)
         ];    
