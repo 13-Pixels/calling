@@ -202,7 +202,7 @@ class CallbacksResource extends Resource
                 ->formatStateUsing(function (string $state) {
                     return match ($state) {
                         'booking' => 'Booking',
-                        'pending_quote' => 'pending_quote',
+                        'pending_quote' => 'Pending Quote',
                     };
                 }),
                 // TextColumn::make('job_status')
@@ -216,17 +216,17 @@ class CallbacksResource extends Resource
                 //     ->weight('bold')
                 //     ->searchable(),
                 TextColumn::make('callback_status')
-                    ->color(function (string $state) {
+                    ->formatStateUsing(function (string $state) {
                         return match ($state) {
                             'booked' => 'Booked',
-                            'pending_quote' => 'pending_quote',
+                            'pending_quote' => 'Pending Quote',
                             'new' => 'New',
                             'lost' => 'Lost',
                         };
                     })
-                    ->formatStateUsing(fn(string $state): string => __("{$state}"))
-                    ->weight('bold')
                     ->searchable(),
+                TextColumn::make('total')->money('EUR'),
+
             ])
             ->filters([
                 Filter::make('enquiry_date')

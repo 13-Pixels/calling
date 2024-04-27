@@ -32,31 +32,29 @@ class CallbacksDueToday extends BaseWidget
             Tables\Columns\TextColumn::make('booking_date')->label('Booking Date')->searchable()->dateTime('l jS F Y'),
             Tables\Columns\TextColumn::make('callback_date')->label('Callback Date')->searchable()->dateTime('l jS F Y'),
             TextColumn::make('job_status')
-            // ->color(function (string $state) {
-            //     return match ($state) {
-            //         // CallBackEnum::BOOKING => 'success',
-            //         // CallBackEnum::QUOTE => 'warning',
-            //     };
-            // })
-            ->formatStateUsing(fn (string $state): string => __("{$state}"))
-            ->weight('bold')
+            ->formatStateUsing(function (string $state) {
+                return match ($state) {
+                    'booking' => 'Booking',
+                    'pending_quote' => 'Pending Quote',
+                };
+            })
             ->sortable()
             ->label('Job Status')
             ->searchable(),
             //Tables\Columns\TextColumn::make('location')->label('Location')->searchable(),
             TextColumn::make('callback_status')
-            // ->color(function (string $state) {
-            //     return match ($state) {
-            //         CallBackEnum::BOOKED => 'success',
-            //         CallBackEnum::PENDING => 'warning',
-            //         CallBackEnum::NEW => 'gray',
-            //         CallBackEnum::LOST => 'danger',
-            //     };
-            // })
-            ->formatStateUsing(fn (string $state): string => __("{$state}"))
-            ->weight('bold')
+            ->formatStateUsing(function (string $state) {
+                return match ($state) {
+                    'booked' => 'Booked',
+                    'pending_quote' => 'Pending Quote',
+                    'new' => 'New',
+                    'lost' => 'Lost',
+                };
+            })
             ->label('Callback Status')
             ->searchable(),
+            TextColumn::make('total')->money('EUR'),
+
         ]; 
     }
 }
