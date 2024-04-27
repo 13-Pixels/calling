@@ -198,7 +198,13 @@ class CallbacksResource extends Resource
                 TextColumn::make('enquiry_date')->searchable()->dateTime('l jS F Y'),
                 TextColumn::make('booking_date')->searchable()->dateTime('l jS F Y'),
                 TextColumn::make('callback_date')->searchable()->dateTime('l jS F Y'),
-                TextColumn::make('job_status')->searchable(),
+                TextColumn::make('job_status')->searchable()
+                ->formatStateUsing(function (string $state) {
+                    return match ($state) {
+                        'booking' => 'Booking',
+                        'pending_quote' => 'pending_quote',
+                    };
+                }),
                 // TextColumn::make('job_status')
                 //     ->color(function (string $state) {
                 //         return match ($state) {
@@ -209,14 +215,13 @@ class CallbacksResource extends Resource
                 //     ->formatStateUsing(fn(string $state): string => __("{$state}"))
                 //     ->weight('bold')
                 //     ->searchable(),
-                TextColumn::make('location')->searchable(),
                 TextColumn::make('callback_status')
                     ->color(function (string $state) {
                         return match ($state) {
-                            'booked' => 'success',
-                            'pending' => 'warning',
-                            'new' => 'gray',
-                            'lost' => 'danger',
+                            'booked' => 'Booked',
+                            'pending_quote' => 'pending_quote',
+                            'new' => 'New',
+                            'lost' => 'Lost',
                         };
                     })
                     ->formatStateUsing(fn(string $state): string => __("{$state}"))
