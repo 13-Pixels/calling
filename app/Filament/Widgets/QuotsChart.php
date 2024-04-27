@@ -2,6 +2,9 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Callback;
+use Flowframe\Trend\Trend;
+use Flowframe\Trend\TrendValue;
 use Filament\Widgets\ChartWidget;
 
 class QuotsChart extends ChartWidget
@@ -14,14 +17,22 @@ class QuotsChart extends ChartWidget
 
     protected function getData(): array
     {
+        $quotes = Trend::query(Callback::where('quote', 'quote'))
+        ->between(
+            start: now()->startOfYear(),
+            end: now(),
+        )
+        ->perMonth()
+        ->count();
+
         return [
             'datasets' => [
                 [
-                    'label' => 'Quotes',
-                    'data' => [10],
+                    'label' => 'Monthly Quotes',
+                    'data' => $quotes->map(fn (TrendValue $value) => $value->aggregate),
                 ],
             ],
-            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'labels' => $quotes->map(fn (TrendValue $value) => $value->date),
         ];
     }
 
