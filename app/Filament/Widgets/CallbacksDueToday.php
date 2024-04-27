@@ -27,7 +27,7 @@ class CallbacksDueToday extends BaseWidget
     {
         return [
             Tables\Columns\TextColumn::make('id')->searchable(),
-            Tables\Columns\TextColumn::make('quote')->label('Quote')->searchable(),
+            Tables\Columns\TextColumn::make('quote')->label('Quote #')->searchable(),
             Tables\Columns\TextColumn::make('enquiry_date')->label('Enquiry Date')->searchable(),
             Tables\Columns\TextColumn::make('booking_date')->label('Booking Date')->searchable(),
             Tables\Columns\TextColumn::make('callback_date')->label('Callback Date')->searchable(),
