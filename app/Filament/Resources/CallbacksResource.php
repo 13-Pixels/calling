@@ -15,6 +15,7 @@ use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Split;
 use Illuminate\Support\Facades\Http;
 use Filament\Forms\Components\Select;
@@ -25,10 +26,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\CallbacksResource\Pages;
 use App\Filament\Resources\CallbacksResource\RelationManagers;
+use Illuminate\Support\Carbon;
 
 
 class CallbacksResource extends Resource
@@ -142,9 +145,9 @@ class CallbacksResource extends Resource
                         ),
 
                         // Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
-                        TextInput::make('customer_name')->label('Customer name'),
-                        TextInput::make('customer_email')->label('Customer Email')->required(),
-                        TextInput::make('customer_phone')->label('Customer Phone'),
+                        TextInput::make('customer_name')->label('Customer name')->readOnly(),
+                        TextInput::make('customer_email')->label('Customer Email')->required()->readOnly(),
+                        TextInput::make('customer_phone')->label('Customer Phone')->readOnly(),
                         DatePicker::make('enquiry_date')->label('Enquiry Date')->required()->default(now()->toDateString()),
                         DatePicker::make('booking_date')->label('Booking Date')->required(),
                     ])
@@ -164,7 +167,7 @@ class CallbacksResource extends Resource
                             ->options([
                                 'booking' => 'Booking',
                                 'pending_quote' => 'Pending Quote',
-                            ])->required(),
+                            ])->required()->default(['pending_quote']),
                             // ->hidden(fn(string $operation): bool => $operation === 'edit'),
                         Select::make('callback_status')
                             ->label('Callback Status')
@@ -174,7 +177,7 @@ class CallbacksResource extends Resource
                                 'new' => 'New',
                                 'lost' => 'Lost',
                             ])
-                            ->required(),
+                            ->required()->default(['new']),
                             // ->default(''),
                         DatePicker::make('callback_date')->label('Callback Date')->required(),
                         TextInput::make('pick_up')->label('Pick Up')->required(),
@@ -192,9 +195,9 @@ class CallbacksResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('quote')->searchable(),
-                TextColumn::make('enquiry_date')->searchable(),
-                TextColumn::make('booking_date')->searchable(),
-                TextColumn::make('callback_date')->searchable(),
+                TextColumn::make('enquiry_date')->searchable()->dateTime('l jS F Y'),
+                TextColumn::make('booking_date')->searchable()->dateTime('l jS F Y'),
+                TextColumn::make('callback_date')->searchable()->dateTime('l jS F Y'),
                 TextColumn::make('job_status')->searchable(),
                 // TextColumn::make('job_status')
                 //     ->color(function (string $state) {
@@ -221,7 +224,70 @@ class CallbacksResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                //
+                Filter::make('enquiry_date')
+                    ->form([
+                        DatePicker::make('enquiry_date')
+                            ->placeholder(fn($state): string => now()->format('Y-m-d'))
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['enquiry_date'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('enquiry_date', $data['enquiry_date']),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['enquiry_date'] ?? null) {
+                            $indicators['enquiry_date'] = 'Enquiry Date: ' . Carbon::parse($data['enquiry_date'])->toFormattedDateString();
+                        }
+
+                        return $indicators;
+                    }),
+
+                    /////////Booking Date 
+                    Filter::make('booking_date')
+                    ->form([
+                        DatePicker::make('booking_date')
+                            ->placeholder(fn($state): string => now()->format('Y-m-d'))
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['booking_date'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('booking_date', $data['booking_date']),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['booking_date'] ?? null) {
+                            $indicators['booking_date'] = 'Booking Date: ' . Carbon::parse($data['booking_date'])->toFormattedDateString();
+                        }
+
+                        return $indicators;
+                    }),
+
+                     /////////Callback Date 
+                     Filter::make('callback_date')
+                     ->form([
+                         DatePicker::make('callback_date')
+                             ->placeholder(fn($state): string => now()->format('Y-m-d'))
+                     ])
+                     ->query(function (Builder $query, array $data): Builder {
+                         return $query
+                             ->when(
+                                 $data['callback_date'],
+                                 fn(Builder $query, $date): Builder => $query->whereDate('callback_date', $data['callback_date']),
+                             );
+                     })
+                     ->indicateUsing(function (array $data): array {
+                         $indicators = [];
+                         if ($data['callback_date'] ?? null) {
+                             $indicators['callback_date'] = 'Callback Date: ' . Carbon::parse($data['callback_date'])->toFormattedDateString();
+                         }
+ 
+                         return $indicators;
+                     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
