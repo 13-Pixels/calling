@@ -42,9 +42,10 @@ class CallbackController extends Controller
             'enquiry_date' => 'required|date_format:Y-m-d',
             'booking_date' => 'required|date_format:Y-m-d',
             'job_status' => 'required',
-            'customer' => 'required',
+            'customer_email' => 'required',
             'pick_up' => 'required',
             'drop_off' => 'required',
+            'total' => 'required',
         ]);
 
         // Check if the validation fails
