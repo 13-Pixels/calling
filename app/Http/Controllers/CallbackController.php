@@ -60,7 +60,7 @@ class CallbackController extends Controller
         }   
     }
 
-    public function updaete($id) {
+    public function update($id) {
          $validator = Validator::make($request->all(), [
             'quote' => 'required',
             'enquiry_date' => 'required|date_format:Y-m-d',
