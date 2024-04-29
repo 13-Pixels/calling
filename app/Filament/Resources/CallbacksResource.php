@@ -122,30 +122,30 @@ class CallbacksResource extends Resource
                                 $http = new Http();
                                 
                                     $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
-
-                                    if(!$data['callbacks']){
+                                   dd($data);
+                                    if(!$data){
                                         Notification::make()
                                     ->title('Quote not exist')
                                     ->danger()
                                     ->send();  
                                     }
                             
-                                    //  dd($data['callbacks']['customer_name']);
+                                    //  dd($data['customer_name']);
                             
                                 } catch (RequestException $e) {
                                     
                                 }
                                 
-                        $set('customer_name', $data['callbacks']['customer_name'] ?? null);
-                        $set('customer_email', $data['callbacks']['customer_email'] ?? null);
-                        $set('customer_phone', $data['callbacks']['customer_phone'] ?? null);
-                        $set('enquiry_date', $data['callbacks']['enquiry_date'] ?? null);
-                        $set('booking_date', $data['callbacks']['booking_date'] ?? null);
-                        $set('job_status', $data['callbacks']['job_status'] ?? null);
-                        $set('callback_status', $data['callbacks']['callback_status'] ?? null);
-                        $set('callback_date', $data['callbacks']['callback_date'] ?? null);
-                        $set('pick_up', $data['callbacks']['pick_up'] ?? null);
-                        $set('drop_off', $data['callbacks']['drop_off'] ?? null);
+                        $set('customer_name', $data['customer_name'] ?? null);
+                        $set('customer_email', $data['customer_email'] ?? null);
+                        $set('customer_phone', $data['customer_phone'] ?? null);
+                        $set('enquiry_date', $data['enquiry_date'] ?? null);
+                        $set('booking_date', $data['booking_date'] ?? null);
+                        $set('job_status', $data['job_status'] ?? null);
+                        $set('callback_status', $data['callback_status'] ?? null);
+                        $set('callback_date', $data['callback_date'] ?? null);
+                        $set('pick_up', $data['pick_up'] ?? null);
+                        $set('drop_off', $data['drop_off'] ?? null);
                             })
                         ),
 
