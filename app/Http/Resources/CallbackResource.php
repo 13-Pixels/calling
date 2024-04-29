@@ -15,6 +15,7 @@ class CallbackResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'quote' => $this->quote,
             'customer_name' => $this->customer_name,
             'customer_phone' => $this->customer_phone,

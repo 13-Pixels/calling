@@ -22,3 +22,4 @@ use App\Http\Controllers\CallbackController;
 Route::get('/callback', [CallbackController::class, 'index']);
 Route::get('/callback/{id}', [CallbackController::class, 'show']);
 Route::post('/callback', [CallbackController::class, 'store']);
+Route::put('/callback/{id}', [CallbackController::class, 'update']);
