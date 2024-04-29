@@ -18,7 +18,7 @@ class BookingChart extends ChartWidget
     protected function getData(): array
     {
         // Totals per month
-        $quotes = Trend::query(Callback::where('quote', 'booking'))
+        $quotes = Trend::query(Callback::where('job_status', 'booking'))
         ->between(
             start: now()->startOfYear(),
             end: now(),
