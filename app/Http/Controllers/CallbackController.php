@@ -2,39 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Callback;
+use Illuminate\Http\Request;
+use App\Http\Resources\CallbackResource;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\CallbackCollection;
 
 class CallbackController extends Controller
 {
     public function index(Request $request)
     {
-           
-                try {
-                    if (!$request->quote) {
-                        $callbacks = Callback::all();
-                        return response()->json(['success' => true, 'callbacks' => $callbacks], 200);
-                
+        try{
+            if (!$request->quote) {
+                return CallbackResource::collection(Callback::all());
             }else{
-                $callbacks = Callback::where('quote', $request->quote)->first();
-                return response()->json(['success' => true, 'callbacks' => $callbacks], 200);
+                $callback = Callback::where('quote', $request->quote)->first();
+                return new CallbackResource($callback);
             }
         }
         catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch Callback.'], 500);
+            return $e;
         }
     }
        
     public function show($id)
     {
         try {
-            $callback = Callback::with('customer', 'activity')->findOrFail($id);//->with('customer');
-            return response()->json(['success' => true, 'data' => $callback], 200);
+            return new CallbackResource(Callback::findOrFail($id));
         } catch (\Exception $e) {
             return response()->json(['error' => 'Callback not found.'], 404);
         }
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -57,7 +56,7 @@ class CallbackController extends Controller
             $callback = Callback::create($request->all());
             return response()->json(['success' => true, 'message' => 'Callback created successfully.', 'data' => $callback], 201);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create Callback.'], 500);
+            return $e;
         }   
     }
 }
