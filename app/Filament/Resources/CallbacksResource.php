@@ -229,7 +229,7 @@ class CallbacksResource extends Resource
                         };
                     })
                     ->searchable()->sortable(),
-                TextColumn::make('total')->money('EUR'),
+                TextColumn::make('total')->money(),
 
             ])
             ->filters([
