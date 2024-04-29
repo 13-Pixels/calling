@@ -17,7 +17,7 @@ class QuotsChart extends ChartWidget
 
     protected function getData(): array
     {
-        $quotes = Trend::query(Callback::where('quote', 'quote'))
+        $quotes = Trend::query(Callback::where('job_status', 'pending_quote'))
         ->between(
             start: now()->startOfYear(),
             end: now(),
