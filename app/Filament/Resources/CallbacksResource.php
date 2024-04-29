@@ -122,7 +122,7 @@ class CallbacksResource extends Resource
                                 $http = new Http();
                                 
                                     $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
-                                   dd($data);
+                                //    dd($data);
                                     if(!$data){
                                         Notification::make()
                                     ->title('Quote not exist')
