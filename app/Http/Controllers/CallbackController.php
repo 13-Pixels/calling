@@ -78,7 +78,7 @@ class CallbackController extends Controller
 
            // Attempt to create the callback
         try {
-            $callback = Callback::update($request->all());
+            $callback = Callback::where('id', $id)->first()->update($request->all());
             return response()->json(['success' => true, 'message' => 'Callback updated successfully.', 'data' => $callback], 201);
         } catch (\Exception $e) {
             return $e;
