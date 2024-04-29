@@ -53,7 +53,7 @@ class CallbacksDueToday extends BaseWidget
             })
             ->label('Callback Status')
             ->searchable(),
-            TextColumn::make('total')->money('EUR'),
+            TextColumn::make('total')->money(),
 
         ]; 
     }
