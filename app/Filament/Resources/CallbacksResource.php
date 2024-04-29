@@ -113,7 +113,7 @@ class CallbacksResource extends Resource
                             if (blank($state))
                                 {
                                     Notification::make()
-                                    ->title('Please enter number')
+                                    ->title('Please enter quote')
                                     ->danger()
                                     ->send();                                
                                 }
@@ -122,12 +122,18 @@ class CallbacksResource extends Resource
                                 $http = new Http();
                                 
                                     $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
-                                
+
+                                    if(!$data['callbacks']){
+                                        Notification::make()
+                                    ->title('Quote not exist')
+                                    ->danger()
+                                    ->send();  
+                                    }
+                            
                                     //  dd($data['callbacks']['customer_name']);
                             
                                 } catch (RequestException $e) {
-                                    Filament::notify('danger', 'Unable to find the country');
-                                    return;
+                                    
                                 }
                                 
                         $set('customer_name', $data['callbacks']['customer_name'] ?? null);
@@ -140,7 +146,6 @@ class CallbacksResource extends Resource
                         $set('callback_date', $data['callbacks']['callback_date'] ?? null);
                         $set('pick_up', $data['callbacks']['pick_up'] ?? null);
                         $set('drop_off', $data['callbacks']['drop_off'] ?? null);
-                        $set('via', $data['callbacks']['via'] ?? null);
                             })
                         ),
 
@@ -179,11 +184,10 @@ class CallbacksResource extends Resource
                             ])
                             ->required()->default(['new']),
                             // ->default(''),
-                        DatePicker::make('callback_date')->label('Callback Date')->required(),
+                        DatePicker::make('callback_date')->label('Callback Date')->required()->default(now()->toDateString()),
                         TextInput::make('pick_up')->label('Pick Up')->required(),
                         TextInput::make('drop_off')->label('Drop Off')->required(),
-                        TextInput::make('via')->label('via'),
-                        TextInput::make('total')->label('Total Price')->numeric(),
+                        TextInput::make('total')->label('Total Price')->readOnly(),
                         TextInput::make('discount')->label('Discount Price')->numeric(),
                         // Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
@@ -194,7 +198,7 @@ class CallbacksResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('quote')->searchable(),
+                TextColumn::make('quote')->searchable()->sortable(),
                 TextColumn::make('enquiry_date')->searchable()->dateTime('l jS F Y'),
                 TextColumn::make('booking_date')->searchable()->dateTime('l jS F Y'),
                 TextColumn::make('callback_date')->searchable()->dateTime('l jS F Y'),
