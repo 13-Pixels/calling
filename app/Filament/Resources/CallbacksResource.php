@@ -202,13 +202,13 @@ class CallbacksResource extends Resource
                 TextColumn::make('enquiry_date')->searchable()->dateTime('l jS F Y')->sortable(),
                 TextColumn::make('booking_date')->searchable()->dateTime('l jS F Y')->sortable(),
                 TextColumn::make('callback_date')->searchable()->dateTime('l jS F Y')->sortable(),
-                TextColumn::make('job_status')->searchable()
-                ->formatStateUsing(function (string $state) {
-                    return match ($state) {
-                        'booking' => 'Booking',
-                        'pending_quote' => 'Pending Quote',
-                    };
-                })->sortable(),
+                TextColumn::make('job_status')->searchable(),
+                // ->formatStateUsing(function (string $state) {
+                //     return match ($state) {
+                //         'booking' => 'Booking',
+                //         'pending_quote' => 'Pending Quote',
+                //     };
+                // })->sortable(),
                 // TextColumn::make('job_status')
                 //     ->color(function (string $state) {
                 //         return match ($state) {
