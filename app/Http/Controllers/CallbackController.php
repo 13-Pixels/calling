@@ -59,4 +59,29 @@ class CallbackController extends Controller
             return $e;
         }   
     }
+
+    public function updaete($id) {
+         $validator = Validator::make($request->all(), [
+            'quote' => 'required',
+            'enquiry_date' => 'required|date_format:Y-m-d',
+            'booking_date' => 'required|date_format:Y-m-d',
+            'job_status' => 'required',
+            'customer_email' => 'required',
+            'pick_up' => 'required',
+            'drop_off' => 'required',
+            'total' => 'required',
+        ]);   
+          // Check if the validation fails
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+           // Attempt to create the callback
+        try {
+            $callback = Callback::update($request->all());
+            return response()->json(['success' => true, 'message' => 'Callback updated successfully.', 'data' => $callback], 201);
+        } catch (\Exception $e) {
+            return $e;
+        }   
+    }
 }
