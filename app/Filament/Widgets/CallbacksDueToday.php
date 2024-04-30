@@ -26,7 +26,7 @@ class CallbacksDueToday extends BaseWidget
     protected function getTableColumns(): array 
     {
         return [
-            Tables\Columns\TextColumn::make('id')->searchable(),
+            Tables\Columns\TextColumn::make('id')->searchable()->sortable(),
             Tables\Columns\TextColumn::make('quote')->label('Quote #')->searchable(),
             Tables\Columns\TextColumn::make('enquiry_date')->label('Enquiry Date')->searchable()->dateTime('l jS F Y'),
             Tables\Columns\TextColumn::make('booking_date')->label('Booking Date')->searchable()->dateTime('l jS F Y'),
@@ -53,7 +53,7 @@ class CallbacksDueToday extends BaseWidget
             })
             ->label('Callback Status')
             ->searchable(),
-            TextColumn::make('total')->money(),
+            TextColumn::make('total')->prefix('₤'),
 
         ]; 
     }
