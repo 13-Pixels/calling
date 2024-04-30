@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 
 use App\Enums\CallBackEnum;
 use Filament\Facades\Filament;
+use Illuminate\Support\Carbon;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Http;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -31,7 +33,6 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\CallbacksResource\Pages;
 use App\Filament\Resources\CallbacksResource\RelationManagers;
-use Illuminate\Support\Carbon;
 
 
 class CallbacksResource extends Resource
@@ -106,7 +107,7 @@ class CallbacksResource extends Resource
            
                 Section::make('')
                     ->schema([
-                        TextInput::make('quote')->label('Quote')
+                        TextInput::make('quote')->label('Quote')->required()
                         ->suffixAction(Action::make('Fetch')
                         ->button()
                         ->action(function($state, $set, $get) {
@@ -120,9 +121,10 @@ class CallbacksResource extends Resource
 
                                 try {
                                 $http = new Http();
+                                    // $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=savari3&action=show&quote=' . $get('quote'))->json();
                                 
-                                    $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=savari3&action=show&quote=' . $get('quote'))->json();
-                                    dd($data);
+                                    $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
+                                //    dd($data);
                                     if(!$data){
                                         Notification::make()
                                     ->title('Quote not exist')
@@ -146,33 +148,27 @@ class CallbacksResource extends Resource
                         $set('callback_date', $data['callback_date'] ?? null);
                         $set('pick_up', $data['pick_up'] ?? null);
                         $set('drop_off', $data['drop_off'] ?? null);
+                        $set('total', $data['total'] ?? null);
+                        $set('discount', $data['discount'] ?? null);
                             })
                         ),
 
                         // Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
-                        TextInput::make('customer_name')->label('Customer name')->readOnly(),
-                        TextInput::make('customer_email')->label('Customer Email')->required()->readOnly(),
-                        TextInput::make('customer_phone')->label('Customer Phone')->readOnly(),
+                        TextInput::make('customer_name')->label('Customer name')->disabled()->dehydrated(),
+                        TextInput::make('customer_email')->label('Customer Email')->required()->disabled()->dehydrated(),
+                        TextInput::make('customer_phone')->label('Customer Phone')->disabled()->dehydrated(),
                         DatePicker::make('enquiry_date')->label('Enquiry Date')->required()->default(now()->toDateString()),
                         DatePicker::make('booking_date')->label('Booking Date')->required(),
                     ])
                     ->columns(2),
                     // ->hidden(fn(string $operation): bool => $operation === 'edit'),
-                Section::make('')
-                    ->schema([
-                        // Split::make([
-                        //     Placeholder::make('job_status')
-                        //         ->label('Job Status')
-                        //         ->content(fn (Callback $record): string => $record->job_status)
-                        //         // ->color(['booking' => fn (?Callback $record): string => $record ? 'primary' : 'success']),
-                        //             // new HtmlString("<strong><span style='color: " . ($job_status === 'booking' ? 'green' : ($job_status === 'quote' ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
-                        // ])->hidden(fn(string $operation): bool => $operation === 'create'),
-
-                        Select::make('job_status')->label('Job Status')
+                     Fieldset::make()
+                        ->schema([
+                             Select::make('job_status')->label('Job Status')
                             ->options([
                                 'booking' => 'Booking',
                                 'pending_quote' => 'Pending Quote',
-                            ])->required()->default(['pending_quote']),
+                            ])->required()->default(['pending_quote'])->columns(3),
                             // ->hidden(fn(string $operation): bool => $operation === 'edit'),
                         Select::make('callback_status')
                             ->label('Callback Status')
@@ -185,9 +181,21 @@ class CallbacksResource extends Resource
                             ->required()->default(['new']),
                             // ->default(''),
                         DatePicker::make('callback_date')->label('Callback Date')->required()->default(now()->toDateString()),
+                        ])->columns(3),
+                Section::make('')
+                    ->schema([
+                        // Split::make([
+                        //     Placeholder::make('job_status')
+                        //         ->label('Job Status')
+                        //         ->content(fn (Callback $record): string => $record->job_status)
+                        //         // ->color(['booking' => fn (?Callback $record): string => $record ? 'primary' : 'success']),
+                        //             // new HtmlString("<strong><span style='color: " . ($job_status === 'booking' ? 'green' : ($job_status === 'quote' ? 'orange' : 'inherit')) . ";'>$job_status</span></strong>")),
+                        // ])->hidden(fn(string $operation): bool => $operation === 'create'),
+                       
+                       
                         TextInput::make('pick_up')->label('Pick Up')->required(),
                         TextInput::make('drop_off')->label('Drop Off')->required(),
-                        TextInput::make('total')->label('Total Price')->readOnly(),
+                        TextInput::make('total')->label('Total Price')->disabled()->dehydrated(),
                         TextInput::make('discount')->label('Discount Price')->numeric(),
                         // Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
