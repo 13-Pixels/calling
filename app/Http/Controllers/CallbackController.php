@@ -17,7 +17,11 @@ class CallbackController extends Controller
                 return CallbackResource::collection(Callback::all());
             }else{
                 $callback = Callback::where('quote', $request->quote)->first();
+                if ($callback) {
                 return new CallbackResource($callback);
+                }else{
+                    return [];
+                }
             }
         }
         catch (\Exception $e) {
