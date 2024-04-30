@@ -107,6 +107,7 @@ class CallbacksResource extends Resource
            
                 Section::make('')
                     ->schema([
+
                         TextInput::make('quote')->label('Quote')->required()
                         ->suffixAction(Action::make('Fetch')
                         ->button()
@@ -121,9 +122,9 @@ class CallbacksResource extends Resource
 
                                 try {
                                 $http = new Http();
-                                    // $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=savari3&action=show&quote=' . $get('quote'))->json();
+                                    $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=omc&action=show&quote=' . $get('quote'))->json();
                                 
-                                    $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
+                                    // $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
                                 //    dd($data);
                                     if(!$data){
                                         Notification::make()
@@ -206,6 +207,7 @@ class CallbacksResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')->searchable()->sortable(),
                 TextColumn::make('quote')->searchable()->sortable(),
                 TextColumn::make('enquiry_date')->searchable()->dateTime('l jS F Y')->sortable(),
                 TextColumn::make('booking_date')->searchable()->dateTime('l jS F Y')->sortable(),
@@ -237,7 +239,7 @@ class CallbacksResource extends Resource
                         };
                     })
                     ->searchable()->sortable(),
-                TextColumn::make('total')->money(),
+                TextColumn::make('total')->prefix('₤'),
 
             ])
             ->filters([
