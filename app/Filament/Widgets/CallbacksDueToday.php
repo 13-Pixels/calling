@@ -35,11 +35,11 @@ class CallbacksDueToday extends BaseWidget
     protected function getTableColumns(): array 
     {
         return [
-            Tables\Columns\TextColumn::make('id')->searchable()->sortable(),
-            Tables\Columns\TextColumn::make('quote')->label('Quote #')->searchable()->sortable(),
-            Tables\Columns\TextColumn::make('enquiry_date')->label('Enquiry Date')->searchable()->sortable()->dateTime('l jS F Y'),
-            Tables\Columns\TextColumn::make('booking_date')->label('Booking Date')->searchable()->sortable()->dateTime('l jS F Y'),
-            Tables\Columns\TextColumn::make('callback_date')->label('Callback Date')->searchable()->sortable()->dateTime('l jS F Y'),
+            Tables\Columns\TextColumn::make('id')->searchable()->sortable()->url(fn (Model $record): string => CallbacksResource::getUrl('edit',  ['record' => $record])),
+            Tables\Columns\TextColumn::make('quote')->label('Quote #')->searchable()->sortable()->url(fn (Model $record): string => CallbacksResource::getUrl('edit',  ['record' => $record])),
+            Tables\Columns\TextColumn::make('enquiry_date')->label('Enquiry Date')->searchable()->sortable()->dateTime('l jS F Y')->url(fn (Model $record): string => CallbacksResource::getUrl('edit',  ['record' => $record])),
+            Tables\Columns\TextColumn::make('booking_date')->label('Booking Date')->searchable()->sortable()->dateTime('l jS F Y')->url(fn (Model $record): string => CallbacksResource::getUrl('edit',  ['record' => $record])),
+            Tables\Columns\TextColumn::make('callback_date')->label('Callback Date')->searchable()->sortable()->dateTime('l jS F Y')->url(fn (Model $record): string => CallbacksResource::getUrl('edit',  ['record' => $record])),
             TextColumn::make('job_status')
             ->formatStateUsing(function (string $state) {
                 return match ($state) {
@@ -49,8 +49,7 @@ class CallbacksDueToday extends BaseWidget
             })
             ->sortable()
             ->label('Job Status')
-            ->searchable(),
-            //Tables\Columns\TextColumn::make('location')->label('Location')->searchable(),
+            ->searchable()->url(fn (Model $record): string => CallbacksResource::getUrl('edit',  ['record' => $record])),
             TextColumn::make('callback_status')
             ->formatStateUsing(function (string $state) {
                 return match ($state) {
@@ -61,8 +60,8 @@ class CallbacksDueToday extends BaseWidget
                 };
             })
             ->label('Callback Status')
-            ->searchable()->sortable(),
-            TextColumn::make('total')->prefix('₤'),
+            ->searchable()->sortable()->url(fn (Model $record): string => CallbacksResource::getUrl('edit',  ['record' => $record])),
+            TextColumn::make('total')->prefix('₤')->url(fn (Model $record): string => CallbacksResource::getUrl('edit',  ['record' => $record])),
         ]; 
     }
     
