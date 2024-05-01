@@ -308,30 +308,51 @@ class CallbacksResource extends Resource
  
                          return $indicators;
                      }),
-
-                    //      /////////Job Status 
-                    // SelectFilter::make('job_status')
-                    // ->options([
-                    //     'pendin_quote' => 'Pending Quote',
-                    //     'new' => 'New',
-                    // ])
-                    //  ->query(function (Builder $query, array $data): Builder {
-                    //                                     dd($data);
-
-                    //      return $query
-                    //          ->when(
-                    //              $data['job_status'],
-                    //              fn(Builder $query, $date): Builder => $query->where('job_status', $data['job_status']),
-                    //          );
-                    //  })
-                    //  ->indicateUsing(function (array $data): array {
-                    //      $indicators = [];
-                    //      if ($data['job_status'] ?? null) {
-                    //          $indicators['job_status'] = 'Job Status: ' . $data['job_status'];
-                    //      }
+                     
+                     /////////Job Status 
+                     SelectFilter::make('job_status')
+                     ->options([
+                        'pending_quote' => 'Pending Quote',
+                        'booking' => 'Booking',
+                     ])
+                     ->query(function (Builder $query, array $data): Builder {
+                         return $query
+                             ->when(
+                                 $status = $data['value'],
+                                //  dd($status),
+                                 fn(Builder $query, $data): Builder => $query->where('job_status', $status),
+                             );
+                     })
+                     ->indicateUsing(function (array $data): array {
+                         $indicators = [];
+                         if ($data['value'] ?? null) {
+                             $indicators['job_status'] = 'Job Status: ' . str_replace("_", " ", ucwords($data['value'], " /_"));
+                         }
  
-                    //      return $indicators;
-                    //  }),
+                         return $indicators;
+                     }),
+                      /////////Callback Status
+                      SelectFilter::make('callback_status')
+                     ->options([
+                        'booked' => 'Booked',
+                            'pending_quote' => 'Pending Quote',
+                            'new' => 'New',
+                            'lost' => 'Lost',
+                     ])
+                     ->query(function (Builder $query, array $data): Builder {
+                         return $query
+                             ->when(
+                                 $status = $data['value'],
+                                 fn(Builder $query, $data): Builder => $query->where('callback_status', $status),
+                             );
+                     })
+                     ->indicateUsing(function (array $data): array {
+                         $indicators = [];
+                         if ($data['value'] ?? null) {
+                             $indicators['callback_status'] = 'Callback Status: ' . str_replace("_", " ", ucwords($data['value'], " /_"));
+                         }
+                         return $indicators;
+                     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
