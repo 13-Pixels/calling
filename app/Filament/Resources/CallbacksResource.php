@@ -28,6 +28,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Actions\Action;
@@ -218,7 +219,7 @@ class CallbacksResource extends Resource
                         'booking' => 'Booking',
                         'pending_quote' => 'Pending Quote',
                     };
-                })->sortable(),
+                })->searchable()->sortable(),
                 // TextColumn::make('job_status')
                 //     ->color(function (string $state) {
                 //         return match ($state) {
@@ -307,6 +308,30 @@ class CallbacksResource extends Resource
  
                          return $indicators;
                      }),
+
+                    //      /////////Job Status 
+                    // SelectFilter::make('job_status')
+                    // ->options([
+                    //     'pendin_quote' => 'Pending Quote',
+                    //     'new' => 'New',
+                    // ])
+                    //  ->query(function (Builder $query, array $data): Builder {
+                    //                                     dd($data);
+
+                    //      return $query
+                    //          ->when(
+                    //              $data['job_status'],
+                    //              fn(Builder $query, $date): Builder => $query->where('job_status', $data['job_status']),
+                    //          );
+                    //  })
+                    //  ->indicateUsing(function (array $data): array {
+                    //      $indicators = [];
+                    //      if ($data['job_status'] ?? null) {
+                    //          $indicators['job_status'] = 'Job Status: ' . $data['job_status'];
+                    //      }
+ 
+                    //      return $indicators;
+                    //  }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
@@ -326,7 +351,7 @@ class CallbacksResource extends Resource
         ];
     }
 
-    public static function getPages(): array
+    public static function getPages(): array    
     {
         return [
             'index' => Pages\ListCallbacks::route('/'),
