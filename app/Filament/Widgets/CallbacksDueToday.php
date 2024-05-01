@@ -36,10 +36,10 @@ class CallbacksDueToday extends BaseWidget
     {
         return [
             Tables\Columns\TextColumn::make('id')->searchable()->sortable(),
-            Tables\Columns\TextColumn::make('quote')->label('Quote #')->searchable(),
-            Tables\Columns\TextColumn::make('enquiry_date')->label('Enquiry Date')->searchable()->dateTime('l jS F Y'),
-            Tables\Columns\TextColumn::make('booking_date')->label('Booking Date')->searchable()->dateTime('l jS F Y'),
-            Tables\Columns\TextColumn::make('callback_date')->label('Callback Date')->searchable()->dateTime('l jS F Y'),
+            Tables\Columns\TextColumn::make('quote')->label('Quote #')->searchable()->sortable(),
+            Tables\Columns\TextColumn::make('enquiry_date')->label('Enquiry Date')->searchable()->sortable()->dateTime('l jS F Y'),
+            Tables\Columns\TextColumn::make('booking_date')->label('Booking Date')->searchable()->sortable()->dateTime('l jS F Y'),
+            Tables\Columns\TextColumn::make('callback_date')->label('Callback Date')->searchable()->sortable()->dateTime('l jS F Y'),
             TextColumn::make('job_status')
             ->formatStateUsing(function (string $state) {
                 return match ($state) {
@@ -61,9 +61,8 @@ class CallbacksDueToday extends BaseWidget
                 };
             })
             ->label('Callback Status')
-            ->searchable(),
+            ->searchable()->sortable(),
             TextColumn::make('total')->prefix('₤'),
-           
         ]; 
     }
     
