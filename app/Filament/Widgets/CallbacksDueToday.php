@@ -29,7 +29,7 @@ class CallbacksDueToday extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        return Callback::query()->latest();
+        return Callback::query()->where('callback_date',today())->latest();
     }
     
     protected function getTableColumns(): array 
