@@ -123,7 +123,7 @@ class CallbacksResource extends Resource
 
                                 try {
                                 $http = new Http();
-                                    $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=omc&action=show&quote=' . $get('quote'))->json();
+                                    $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=savari3&action=show&quote=' . $get('quote'))->json();
                                 
                                     // $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
                                 //    dd($data);
