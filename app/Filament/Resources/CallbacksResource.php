@@ -121,7 +121,6 @@ class CallbacksResource extends Resource
                                     ->send();                                
                                 }
 
-
                                 try {
                                 $http = new Http();
                                     $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=omc&action=show&id=' . $get('quote'))->json();
@@ -143,7 +142,11 @@ class CallbacksResource extends Resource
                                     }else{
                                         $set('booking_date', null);
                                     }
-                                    $set('job_status', $data['0']['job_status'] ?? null);
+                                    if($data['0']['job_Status'] == 0 || 10){
+                                        $set('job_status', 'pending_quote');
+                                    }else{
+                                        $set('job_status', 'booking');
+                                    }
                                     $set('callback_status', $data['0']['callback_status'] ?? null);
                                     $set('callback_date', date('Y-m-d') ?? null);
                                     $set('pick_up', $data['0']['pickup'] ?? null);
