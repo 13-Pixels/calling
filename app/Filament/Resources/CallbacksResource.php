@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Facades\URL;
 use Filament\Forms\Components\Split;
 use Illuminate\Support\Facades\Http;
 use Filament\Forms\Components\Select;
@@ -110,55 +111,80 @@ class CallbacksResource extends Resource
                     ->schema([
 
                         TextInput::make('quote')->label('Quote')->required()
-                        ->suffixAction(Action::make('Fetch')
-                        ->button()
-                        ->action(function($state, $set, $get) {
-                            if (blank($state))
-                                {
-                                    Notification::make()
-                                    ->title('Please enter quote')
-                                    ->danger()
-                                    ->send();                                
-                                }
+                        ->suffixActions([
+                            Action::make('Fetch')
+                                ->button()
+                                ->action(function($state, $set, $get) {
+                                    if (blank($state))
+                                        {
+                                            Notification::make()
+                                            ->title('Please enter quote')
+                                            ->danger()
+                                            ->send();                                
+                                        }
 
-                                try {
-                                $http = new Http();
-                                    $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=omc&action=show&id=' . $get('quote'))->json();
+                                        try {
+                                        $http = new Http();
+                                            $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=omc&action=show&id=' . $get('quote'))->json();
 
-                                    // $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
-                                    // dd($data);
-                                    if(!$data){
-                                        Notification::make()
-                                    ->title('Quote not exist')
-                                    ->danger()
-                                    ->send();  
-                                    }
-                                    $set('customer_name', $data['0']['name'] ?? null);
-                                    $set('customer_email', $data['0']['email'] ?? null);
-                                    $set('customer_phone', $data['0']['telephone'] ?? null);
-                                    $set('enquiry_date',  date('Y-m-d') ?? null);
-                                    if($data){
-                                        $set('booking_date',  date('Y-m-d',$data['0']['job_date']) );
-                                    }else{
-                                        $set('booking_date', null);
-                                    }
-                                    if($data['0']['job_Status'] == 0 || 10){
-                                        $set('job_status', 'pending_quote');
-                                    }else{
-                                        $set('job_status', 'booking');
-                                    }
-                                    $set('callback_status', $data['0']['callback_status'] ?? null);
-                                    $set('callback_date', date('Y-m-d') ?? null);
-                                    $set('pick_up', $data['0']['pickup'] ?? null);
-                                    $set('drop_off', $data['0']['destination'] ?? null);
-                                    $set('total', $data['0']['total_not_refer'] ?? null);
-                                    $set('discount', $data['0']['discount'] ?? null);                            
-                                } catch (RequestException $e) {
-                                    
-                                }
-                            })
-                        ),
+                                            // $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
+                                            // dd($data);
+                                            if(!$data){
+                                                Notification::make()
+                                            ->title('Quote not exist')
+                                            ->danger()
+                                            ->send();  
+                                            }
+                                            $set('customer_name', $data['0']['name'] ?? null);
+                                            $set('customer_email', $data['0']['email'] ?? null);
+                                            $set('customer_phone', $data['0']['telephone'] ?? null);
+                                            $set('enquiry_date',  date('Y-m-d') ?? null);
+                                            if($data){
+                                                $set('booking_date',  date('Y-m-d',$data['0']['job_date']) );
+                                            }else{
+                                                $set('booking_date', null);
+                                            }
+                                            if($data['0']['job_Status'] == 0 || 10){
+                                                $set('job_status', 'pending_quote');
+                                            }else{
+                                                $set('job_status', 'booking');
+                                            }
+                                            $set('callback_status', $data['0']['callback_status'] ?? null);
+                                            $set('callback_date', date('Y-m-d') ?? null);
+                                            $set('pick_up', $data['0']['pickup'] ?? null);
+                                            $set('drop_off', $data['0']['destination'] ?? null);
+                                            $set('total', $data['0']['total_not_refer'] ?? null);
+                                            $set('discount', $data['0']['discount'] ?? null);                            
+                                        } catch (RequestException $e) {
+                                            
+                                        }
+                                    }),
+                                    // Action::make('Open in savari')
+                                    //     ->button()
+                                    //         // ->url(fn ($state): string => 'https://operator.savari.io/job.php?action=edit&id=' . $state . '&list=new')
+                                    //     // ->url(function($state){
+                                    //     //     dd($state);
+                                    //     // }),
+                                    //         // ->url('https://operator.savari.io/job.php?action=edit&id=4&list=new')->openUrlInNewTab()
 
+
+                                    //     // ->url('https://operator.savari.io/job.php?action=edit&id=' . $state . '&list=new'),
+                                    //     ->action(function($state) {
+                                    //         if (blank($state)){
+                                    //             Notification::make()
+                                    //             ->title('Please enter quote')
+                                    //             ->danger()
+                                    //             ->send();                                
+                                    //         }else{
+                                    //             URL('https://operator.savari.io/job.php?action=edit&id=4&list=new');
+                                    //         }
+                                    //         })
+                                        ]),
+
+                        //  TextInput::make('open_quote')->label('Quote')->required()
+                        // ->suffixAction(
+                        // ),
+               
                         // Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
                         TextInput::make('customer_name')->label('Customer name')->disabled()->dehydrated(),
                         TextInput::make('customer_email')->label('Customer Email')->required()->disabled()->dehydrated(),
