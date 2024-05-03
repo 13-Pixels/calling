@@ -34,7 +34,7 @@ class CallbackController extends Controller
         try {
             return new CallbackResource(Callback::findOrFail($id));
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Callback not found.'], 404);
+            return [];
         }
     }
 

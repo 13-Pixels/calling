@@ -121,37 +121,35 @@ class CallbacksResource extends Resource
                                     ->send();                                
                                 }
 
+
                                 try {
                                 $http = new Http();
-                                    $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=savari3&action=show&quote=' . $get('quote'))->json();
-                                
+                                    $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=omc&action=show&id=' . $get('quote'))->json();
+
                                     // $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
-                                //    dd($data);
+                                //    dd(!$data);
                                     if(!$data){
                                         Notification::make()
                                     ->title('Quote not exist')
                                     ->danger()
                                     ->send();  
-                                    }
-                            
-                                    //  dd($data['customer_name']);
-                            
+                                    }else{
+                                        $set('customer_name', $data['0']['name'] ?? null);
+                                        $set('customer_email', $data['0']['email'] ?? null);
+                                        $set('customer_phone', $data['0']['telephone'] ?? null);
+                                        $set('enquiry_date',  date('Y-m-d') ?? null);
+                                        $set('booking_date', date('Y-m-d',$data[0]['job_date']) ?? null);
+                                        $set('job_status', $data['0']['job_status'] ?? null);
+                                        $set('callback_status', $data['0']['callback_status'] ?? null);
+                                        $set('callback_date', date('Y-m-d') ?? null);
+                                        $set('pick_up', $data['0']['pickup'] ?? null);
+                                        $set('drop_off', $data['0']['destination'] ?? null);
+                                        $set('total', $data['0']['total_not_refer'] ?? null);
+                                        $set('discount', $data['0']['discount'] ?? null);
+                                    }                            
                                 } catch (RequestException $e) {
-                                    
+                                    return $e;
                                 }
-                                
-                        $set('customer_name', $data['customer_name'] ?? null);
-                        $set('customer_email', $data['customer_email'] ?? null);
-                        $set('customer_phone', $data['customer_phone'] ?? null);
-                        $set('enquiry_date', $data['enquiry_date'] ?? null);
-                        $set('booking_date', $data['booking_date'] ?? null);
-                        $set('job_status', $data['job_status'] ?? null);
-                        $set('callback_status', $data['callback_status'] ?? null);
-                        $set('callback_date', $data['callback_date'] ?? null);
-                        $set('pick_up', $data['pick_up'] ?? null);
-                        $set('drop_off', $data['drop_off'] ?? null);
-                        $set('total', $data['total'] ?? null);
-                        $set('discount', $data['discount'] ?? null);
                             })
                         ),
 
