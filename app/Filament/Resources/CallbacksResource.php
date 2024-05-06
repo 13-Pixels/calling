@@ -28,6 +28,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Redirect;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -159,26 +160,19 @@ class CallbacksResource extends Resource
                                             
                                         }
                                     }),
-                                    // Action::make('Open in savari')
-                                    //     ->button()
-                                    //         // ->url(fn ($state): string => 'https://operator.savari.io/job.php?action=edit&id=' . $state . '&list=new')
-                                    //     // ->url(function($state){
-                                    //     //     dd($state);
-                                    //     // }),
-                                    //         // ->url('https://operator.savari.io/job.php?action=edit&id=4&list=new')->openUrlInNewTab()
-
-
-                                    //     // ->url('https://operator.savari.io/job.php?action=edit&id=' . $state . '&list=new'),
-                                    //     ->action(function($state) {
-                                    //         if (blank($state)){
-                                    //             Notification::make()
-                                    //             ->title('Please enter quote')
-                                    //             ->danger()
-                                    //             ->send();                                
-                                    //         }else{
-                                    //             URL('https://operator.savari.io/job.php?action=edit&id=4&list=new');
-                                    //         }
-                                    //         })
+                                    Action::make('Open in savari')
+                                        ->button()
+                                        ->action(function($state) {
+                                            if (blank($state)){
+                                                Notification::make()
+                                                ->title('Please enter quote')
+                                                ->danger()
+                                                ->send();                                
+                                            }
+                                            else{
+                                                return Redirect::to('https://operator.savari.io/job.php?action=edit&id=' . $state . '&list=new');
+                                            }
+                                            })
                                         ]),
 
                         //  TextInput::make('open_quote')->label('Quote')->required()
