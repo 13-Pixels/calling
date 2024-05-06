@@ -122,14 +122,10 @@ class CallbacksResource extends Resource
                                             ->title('Please enter quote')
                                             ->danger()
                                             ->send();                                
-                                        }
-
-                                        try {
+                                        }else{
+                                            try {
                                         $http = new Http();
-                                            $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=omc&action=show&id=' . $get('quote'))->json();
-
-                                            // $data =Http::get('https://callbacks.savari.io/api/callback?quote=' . $get('quote'))->json();
-                                            // dd($data);
+                                            $data =Http::get('https://operator.savari.io/web_api_v2.php?company_name=savari3&action=show&id=' . $get('quote'))->json();
                                             if(!$data){
                                                 Notification::make()
                                             ->title('Quote not exist')
@@ -145,10 +141,12 @@ class CallbacksResource extends Resource
                                             }else{
                                                 $set('booking_date', null);
                                             }
-                                            if($data['0']['job_Status'] == 0 || 10){
+                                            if($data){
+                                                   if($data[0]['job_Status'] == 0 || 10){
                                                 $set('job_status', 'pending_quote');
                                             }else{
                                                 $set('job_status', 'booking');
+                                            }
                                             }
                                             $set('callback_status', $data['0']['callback_status'] ?? null);
                                             $set('callback_date', date('Y-m-d') ?? null);
@@ -157,8 +155,10 @@ class CallbacksResource extends Resource
                                             $set('total', $data['0']['total_not_refer'] ?? null);
                                             $set('discount', $data['0']['discount'] ?? null);                            
                                         } catch (RequestException $e) {
-                                            
+                                            return $e;
                                         }
+                                        }
+                                     
                                     }),
                                     Action::make('Open in savari')
                                         ->button()
@@ -170,14 +170,10 @@ class CallbacksResource extends Resource
                                                 ->send();                                
                                             }
                                             else{
-                                                return Redirect::to('https://operator.savari.io/job.php?action=edit&id=' . $state . '&list=new');
+                                                return redirect()->away('https://operator.savari.io/job.php?action=edit&id=' . $state . '&list=new');
                                             }
                                             })
                                         ]),
-
-                        //  TextInput::make('open_quote')->label('Quote')->required()
-                        // ->suffixAction(
-                        // ),
                
                         // Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),
                         TextInput::make('customer_name')->label('Customer name')->disabled()->dehydrated(),
@@ -205,8 +201,14 @@ class CallbacksResource extends Resource
                                 'lost' => 'Lost',
                             ])
                             ->required()->default(['new']),
-                            // ->default(''),
-                        DatePicker::make('callback_date')->label('Callback Date')->required()->default(now()->toDateString()),
+                            //     ->live()
+                            // ->afterStateUpdated(function ($state, $set) {
+                            //     if($state == 'lost' || 'booked') {
+                            //         $set('callback_date', date('Y-m-d'));
+                            //      };
+                            // }),
+
+                            DatePicker::make('callback_date')->label('Callback Date')->required()->default(now()->toDateString()),
                         ])->columns(3),
                 Section::make('')
                     ->schema([
@@ -223,6 +225,7 @@ class CallbacksResource extends Resource
                         TextInput::make('drop_off')->label('Drop Off')->required(),
                         TextInput::make('total')->label('Total Price')->disabled()->dehydrated(),
                         TextInput::make('discount')->label('Discount Price')->numeric(),
+                        TextInput::make('close_date')->label('Close Date')->disabled(),
                         // Select::make('location_id')->label('Location')->options($locations)->required(),
                     ])->columns(2),
             ]);
@@ -265,6 +268,7 @@ class CallbacksResource extends Resource
                     })
                     ->searchable()->sortable(),
                 TextColumn::make('total')->prefix('₤'),
+                TextColumn::make('close_date'),
 
             ])
             ->filters([
