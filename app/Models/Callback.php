@@ -23,6 +23,7 @@ class Callback extends Model
         'via',
         'total',
         'discount',
+        'close_date',
     ];
     public function activity()
     {
