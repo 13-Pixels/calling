@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\CallbacksResource\Pages;
 
-use App\Filament\Resources\CallbacksResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\CallbacksResource;
 
 class EditCallbacks extends EditRecord
 {
@@ -15,6 +16,7 @@ class EditCallbacks extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+            Action::make('log')->url(fn (array $data): string => $this->getResource()::getUrl('log', ['record' => $this->getRecord()]))
         ];
     }
 
