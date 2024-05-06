@@ -26,6 +26,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Redirect;
@@ -406,6 +407,7 @@ class CallbacksResource extends Resource
             'index' => Pages\ListCallbacks::route('/'),
             'create' => Pages\CreateCallbacks::route('/create'),
             'edit' => Pages\EditCallbacks::route('/{record}/edit'),
+            'log' => Pages\Logs::route('/{record}/log'),
         ];
     }
     public static function getWidgets(): array
