@@ -25,6 +25,9 @@ class EditCallbacks extends EditRecord
     };
     // dd($data['close_date']);
     $record->update($data);
+    $this->refreshFormData([
+            'close_date',
+        ]);
  
     return $record;
 }
