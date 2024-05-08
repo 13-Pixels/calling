@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 use App\Livewire\demo;
 use Filament\Pages\Page;
+use App\Livewire\TotalChart;
 use App\Livewire\QuotesByDayChart;
 use App\Livewire\LostByClosedDateChart;
 use App\Livewire\BookingByClosedDateChart;
@@ -26,6 +27,7 @@ protected function getHeaderWidgets(): array
         QuotesByDayChart::class,
         BookingByClosedDateChart::class,
         LostByClosedDateChart::class,
+        TotalChart::class
     ];
 }
 
