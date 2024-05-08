@@ -21,7 +21,7 @@ class Report_with_charts extends Page
 protected function getHeaderWidgets(): array
 {
     return [
-        // QuotesByDayChart::class,
+        QuotesByDayChart::class,
         BookingByClosedDateChart::class
     ];
 }
