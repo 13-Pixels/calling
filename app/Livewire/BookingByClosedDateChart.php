@@ -23,7 +23,7 @@ class BookingByClosedDateChart extends ApexChartWidget
      *
      * @var string|null
      */
-    protected static ?string $heading = 'Booking By Closed Date';
+    protected static ?string $heading = 'BookingByClosedDateChart';
 
     /**
      * Chart options (series, labels, types, size, animations...)
@@ -33,14 +33,20 @@ class BookingByClosedDateChart extends ApexChartWidget
      */
     protected function getOptions(): array
     {
-        $data = Trend::query(Callback::where('job_status', 'booking')) 
-            ->between(
-               start: Carbon::parse($this->filterFormData['date_start']), 
-                end: Carbon::parse($this->filterFormData['date_end']), 
-            )
-            ->perDay()
-            ->count(); 
-
+        $quotes = Trend::query(Callback::where('callback_status','booked'))
+        ->between(
+            start: Carbon::parse($this->filterFormData['date_start']),
+            end: Carbon::parse($this->filterFormData['date_end']),
+        )
+        ->perDay()
+        ->count();
+        $enquiry_date = Trend::query(Callback::where('close_date',  '>', now()->subDays(30)->endOfDay()))
+        ->between(
+            start: Carbon::parse($this->filterFormData['date_start']),
+                end: Carbon::parse($this->filterFormData['date_end']),
+        )
+        ->perDay()
+        ->count();
         return [
             'chart' => [
                 'type' => 'line',
@@ -48,15 +54,22 @@ class BookingByClosedDateChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'BasicBarChart',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate), 
+                    'name' => 'Booking',
+                    'data'=>  $quotes->map(fn (TrendValue $value) => $value->aggregate),
+                    'type' => 'column',
+                ],
+                [
+                    'name' => 'Close Date',
+                      'data'=> $enquiry_date->map(fn (TrendValue $value) => $value->aggregate),
+                    'type' => 'line',
                 ],
             ],
+            'stroke' => [
+                'width' => [0, 4],
+            ],
             'xaxis' => [
-                'categories' => $data->map(fn (TrendValue $value) => $value->date), 
-
+                'categories' =>  $enquiry_date->map(fn (TrendValue $value) => $value->aggregate),
                 'labels' => [
-                    'name' => 'BlogPostsChart',
                     'style' => [
                         'fontFamily' => 'inherit',
                     ],
@@ -64,26 +77,26 @@ class BookingByClosedDateChart extends ApexChartWidget
             ],
             'yaxis' => [
                 'labels' => [
-                    'name' => 'BlogPostsChart',
-                    
                     'style' => [
                         'fontFamily' => 'inherit',
                     ],
                 ],
             ],
-            'colors' => ['#f59e0b'],
-            'stroke' => [
-                'curve' => 'smooth',
+            'legend' => [
+                'labels' => [
+                    'fontFamily' => 'inherit',
+                ],
             ],
         ];
     }
-    protected function getFormSchema(): array
+
+     protected function getFormSchema(): array
     {
         return [
             DatePicker::make('date_start')
-                ->default(now()->startOfYear()),
-            DatePicker::make('date_end')
-                ->default(now()),
+            ->default(now()->subDays(30)->endOfDay()),
+            DatePicker::make('date_end')->default(now()),
+            
         ];
     }
-}
+    }

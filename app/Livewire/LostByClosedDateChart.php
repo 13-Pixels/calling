@@ -9,21 +9,21 @@ use Flowframe\Trend\TrendValue;
 use Filament\Forms\Components\DatePicker;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
-class QuotesByDayChart extends ApexChartWidget
+class LostByClosedDateChart extends ApexChartWidget
 {
     /**
      * Chart Id
      *
      * @var string
      */
-    protected static ?string $chartId = 'quotesByDayChart';
+    protected static ?string $chartId = 'lostByClosedDateChart';
 
     /**
      * Widget Title
      *
      * @var string|null
      */
-    protected static ?string $heading = 'Quotes By Day Chart';
+    protected static ?string $heading = 'LostByClosedDateChart';
 
     /**
      * Chart options (series, labels, types, size, animations...)
@@ -33,14 +33,14 @@ class QuotesByDayChart extends ApexChartWidget
      */
     protected function getOptions(): array
     {
-         $quotes = Trend::query(Callback::where('callback_status','new')->orWhere('callback_status','pending_quote'))
+        $quotes = Trend::query(Callback::where('callback_status','lost'))
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
             end: Carbon::parse($this->filterFormData['date_end']),
         )
         ->perDay()
         ->count();
-        $enquiry_date = Trend::query(Callback::where('enquiry_date',  '>', now()->subDays(30)->endOfDay()))
+        $enquiry_date = Trend::query(Callback::where('close_date',  '>', now()->subDays(30)->endOfDay()))
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
                 end: Carbon::parse($this->filterFormData['date_end']),
@@ -54,12 +54,12 @@ class QuotesByDayChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'Quotes',
+                    'name' => 'Lost',
                     'data'=>  $quotes->map(fn (TrendValue $value) => $value->aggregate),
                     'type' => 'column',
                 ],
                 [
-                    'name' => 'Enqiry Date',
+                    'name' => 'Close Date',
                       'data'=> $enquiry_date->map(fn (TrendValue $value) => $value->aggregate),
                     'type' => 'line',
                 ],

@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Filament\Pages;
+use App\Livewire\demo;
 use Filament\Pages\Page;
 use App\Livewire\QuotesByDayChart;
+use App\Livewire\LostByClosedDateChart;
 use App\Livewire\BookingByClosedDateChart;
 
 class Report_with_charts extends Page
@@ -22,7 +24,8 @@ protected function getHeaderWidgets(): array
 {
     return [
         QuotesByDayChart::class,
-        BookingByClosedDateChart::class
+        BookingByClosedDateChart::class,
+        LostByClosedDateChart::class,
     ];
 }
 
