@@ -39,14 +39,14 @@ class QuotesByDayChart extends ApexChartWidget
             end: Carbon::parse($this->filterFormData['date_end']),
         )
         ->perDay()
-        ->sum('total');
+        ->count();
         $enquiry_date = Trend::query(Callback::where('enquiry_date',  '>', now()->subDays(30)->endOfDay()))
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
                 end: Carbon::parse($this->filterFormData['date_end']),
         )
         ->perDay()
-        ->sum('total');
+        ->count();
         return [
             'chart' => [
                 'type' => 'line',
