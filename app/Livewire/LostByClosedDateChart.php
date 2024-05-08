@@ -9,21 +9,21 @@ use Flowframe\Trend\TrendValue;
 use Filament\Forms\Components\DatePicker;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
-class BookingByClosedDateChart extends ApexChartWidget
+class LostByClosedDateChart extends ApexChartWidget
 {
     /**
      * Chart Id
      *
      * @var string
      */
-    protected static ?string $chartId = 'bookingByClosedDateChart';
+    protected static ?string $chartId = 'lostByClosedDateChart';
 
     /**
      * Widget Title
      *
      * @var string|null
      */
-    protected static ?string $heading = 'BookingByClosedDateChart';
+    protected static ?string $heading = 'LostByClosedDateChart';
 
     /**
      * Chart options (series, labels, types, size, animations...)
@@ -33,7 +33,7 @@ class BookingByClosedDateChart extends ApexChartWidget
      */
     protected function getOptions(): array
     {
-        $quotes = Trend::query(Callback::where('callback_status','booked'))
+        $quotes = Trend::query(Callback::where('callback_status','lost'))
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
             end: Carbon::parse($this->filterFormData['date_end']),
@@ -54,7 +54,7 @@ class BookingByClosedDateChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'Booking',
+                    'name' => 'Lost',
                     'data'=>  $quotes->map(fn (TrendValue $value) => $value->aggregate),
                     'type' => 'column',
                 ],
@@ -99,4 +99,4 @@ class BookingByClosedDateChart extends ApexChartWidget
             
         ];
     }
-    }
+}

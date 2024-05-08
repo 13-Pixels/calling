@@ -23,7 +23,7 @@ class QuotesByDayChart extends ApexChartWidget
      *
      * @var string|null
      */
-    protected static ?string $heading = 'Quotes By Day';
+    protected static ?string $heading = 'Quotes By Day Chart';
 
     /**
      * Chart options (series, labels, types, size, animations...)
@@ -31,46 +31,22 @@ class QuotesByDayChart extends ApexChartWidget
      *
      * @return array
      */
-    // protected function getOptions(): array
-    // {
-    //     $data = Trend::model(Callback::class) 
-    //         ->between(
-    //            start: Carbon::parse($this->filterFormData['date_start']), 
-    //             end: Carbon::parse($this->filterFormData['date_end']), 
-    //         )
-    //         ->perDay()
-    //         ->count(); 
-    //     return [
-    //         'chart' => [
-    //             'type' => 'line',
-    //             'height' => 300,
-    //         ],
-    //         'series' => [
-    //             [
-    //                 'name' => 'QuotesByDayChart',
-    //                 'data' => $data->map(fn (TrendValue $value) => $value->aggregate), 
-    //             ],
-    //         ],
-    //         'xaxis' => [
-    //             'labels' => [
-    //                 'style' => [
-    //                     'fontFamily' => 'inherit',
-    //                 ],
-    //             ],
-    //         ],
-    //         'yaxis' => [
-    //             'labels' => [
-    //                 'style' => [
-    //                     'fontFamily' => 'inherit',
-    //                 ],
-    //             ],
-    //         ],
-    //         'colors' => ['#f59e0b'],
-           
-    //     ];
-    // }
-      protected function getOptions(): array
+    protected function getOptions(): array
     {
+         $quotes = Trend::query(Callback::where('callback_status','new')->orWhere('callback_status','pending_quote'))
+        ->between(
+            start: Carbon::parse($this->filterFormData['date_start']),
+            end: Carbon::parse($this->filterFormData['date_end']),
+        )
+        ->perDay()
+        ->sum('total');
+        $enquiry_date = Trend::query(Callback::where('enquiry_date',  '>', now()->subDays(30)->endOfDay()))
+        ->between(
+            start: Carbon::parse($this->filterFormData['date_start']),
+                end: Carbon::parse($this->filterFormData['date_end']),
+        )
+        ->perDay()
+        ->sum('total');
         return [
             'chart' => [
                 'type' => 'line',
@@ -78,16 +54,24 @@ class QuotesByDayChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'BlogPostsChart',
-                    'data' => [7, 4, 6, 10, 14, 7, 5, 9, 10, 15, 13, 18],
+                    'name' => 'Quotes',
+                    'data'=>  $quotes->map(fn (TrendValue $value) => $value->aggregate),
+                    'type' => 'column',
+                ],
+                [
+                    'name' => 'Enqiry Date',
+                      'data'=> $enquiry_date->map(fn (TrendValue $value) => $value->aggregate),
+                    'type' => 'line',
                 ],
             ],
+            'stroke' => [
+                'width' => [0, 4],
+            ],
             'xaxis' => [
-                'categories' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                'categories' =>  $enquiry_date->map(fn (TrendValue $value) => $value->aggregate),
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
-                        'fontWeight' => 600,
                     ],
                 ],
             ],
@@ -98,17 +82,21 @@ class QuotesByDayChart extends ApexChartWidget
                     ],
                 ],
             ],
-            'colors' => ['#f59e0b'],
-
+            'legend' => [
+                'labels' => [
+                    'fontFamily' => 'inherit',
+                ],
+            ],
         ];
     }
-       protected function getFormSchema(): array
+
+     protected function getFormSchema(): array
     {
         return [
             DatePicker::make('date_start')
-                ->default(now()->startOfYear()),
-            DatePicker::make('date_end')
-                ->default(now()),
+            ->default(now()->subDays(30)->endOfDay()),
+            DatePicker::make('date_end')->default(now()),
+            
         ];
     }
 }
