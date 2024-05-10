@@ -25,7 +25,7 @@ class BookingByClosedDateChart extends ApexChartWidget
      *
      * @var string|null
      */
-    protected static ?string $heading = 'BookingByClosedDateChart';
+    protected static ?string $heading = 'Booking By Closed Date';
 
     /**
      * Chart options (series, labels, types, size, animations...)

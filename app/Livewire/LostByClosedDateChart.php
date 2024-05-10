@@ -25,7 +25,7 @@ class LostByClosedDateChart extends ApexChartWidget
      *
      * @var string|null
      */
-    protected static ?string $heading = 'LostByClosedDateChart';
+    protected static ?string $heading = 'Lost By Closed Date';
 
     /**
      * Chart options (series, labels, types, size, animations...)
