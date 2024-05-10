@@ -4,12 +4,13 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Forms\Get;
 use App\Models\Callback;
 use App\Models\Customer;
 use App\Models\Location;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
 
+use Filament\Tables\Table;
 use App\Enums\CallBackEnum;
 use Filament\Facades\Filament;
 use Illuminate\Support\Carbon;
@@ -201,13 +202,23 @@ class CallbacksResource extends Resource
                                 'new' => 'New',
                                 'lost' => 'Lost',
                             ])
-                            ->required()->default(['new']),
+                            ->required()->default(['new'])->live(),
                             //     ->live()
                             // ->afterStateUpdated(function ($state, $set) {
                             //     if($state == 'lost' || 'booked') {
                             //         $set('callback_date', date('Y-m-d'));
                             //      };
                             // }),
+                            Select::make('cancel_reason')
+                                ->options(fn (Get $get): array => match ($get('callback_status')) {
+                                    'lost' => [
+                                        'price_was_high' => 'Price Was High',
+                                        'booked_elsewhere' => 'Booked Elsewhere',
+                                        'plan_cancelled' => 'Plan Cancelled',
+                                        'others' => 'Others',
+                                    ],
+                                    default => [],
+                                }),
 
                             DatePicker::make('callback_date')->label('Callback Date')->required()->default(now()->toDateString()),
                         ])->columns(3),
