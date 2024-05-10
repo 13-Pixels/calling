@@ -27,6 +27,7 @@ class Callback extends Model
         'total',
         'discount',
         'close_date',
+        'cancel_reason'
     ];
     public function activity()
     {
