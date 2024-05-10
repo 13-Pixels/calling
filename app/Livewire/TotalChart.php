@@ -7,6 +7,8 @@ use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class TotalChart extends ApexChartWidget
 {
+    protected int | string | array $columnSpan = 'full';
+
     /**
      * Chart Id
      *

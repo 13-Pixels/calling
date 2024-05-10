@@ -11,6 +11,8 @@ use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class QuotesByDayChart extends ApexChartWidget
 {
+    protected int | string | array $columnSpan = 'full';
+
     /**
      * Chart Id
      *
@@ -33,14 +35,14 @@ class QuotesByDayChart extends ApexChartWidget
      */
     protected function getOptions(): array
     {
-        $count = Trend::query(Callback::where('callback_status', 'pending_quote')->orWhere('callback_status', 'new')->where('enquiry_date',  '>', now()->subDays(30)->endOfDay()))
+        $count = Trend::query(Callback::where('callback_status', 'pending_quote')->orWhere('callback_status', 'new'))
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
             end: Carbon::parse($this->filterFormData['date_end']),
         )
         ->perDay()
         ->count();
-        $price = Trend::query(Callback::where('callback_status', 'pending_quote')->orWhere('callback_status', 'new')->where('enquiry_date',  '>', now()->subDays(30)->endOfDay()))
+        $price = Trend::query(Callback::where('callback_status', 'pending_quote')->orWhere('callback_status', 'new'))
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
                 end: Carbon::parse($this->filterFormData['date_end']),
@@ -67,9 +69,6 @@ class QuotesByDayChart extends ApexChartWidget
             'stroke' => [
                 'width' => [0, 4],
             ],
-             'dataLabels' => [
-                'enabled' => 'true',
-            ],
             'xaxis' => [
                 'categories' => $count->map(fn (TrendValue $value) => $value->date),
                 'labels' => [
@@ -80,11 +79,6 @@ class QuotesByDayChart extends ApexChartWidget
                 'type'=> "datetime",
             ],
             'yaxis' => [
-                // 'labels' => [
-                //     // 'style' => [
-                //     //     'fontFamily' => 'inherit',
-                //     // ],
-                // ],
                  ['title' =>[
                     'text'=> 'Price'
                 ],
