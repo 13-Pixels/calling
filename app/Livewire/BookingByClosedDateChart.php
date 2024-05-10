@@ -11,6 +11,8 @@ use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class BookingByClosedDateChart extends ApexChartWidget
 {
+    protected int | string | array $columnSpan = 'full';
+
     /**
      * Chart Id
      *
@@ -33,20 +35,20 @@ class BookingByClosedDateChart extends ApexChartWidget
      */
     protected function getOptions(): array
     {
-        $quotes = Trend::query(Callback::where('callback_status','booked'))
+       $count = Trend::query(Callback::where('callback_status', 'booked'))
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
             end: Carbon::parse($this->filterFormData['date_end']),
         )
         ->perDay()
         ->count();
-        $enquiry_date = Trend::query(Callback::where('close_date',  '>', now()->subDays(30)->endOfDay()))
+        $price = Trend::query(Callback::where('callback_status', 'booked'))
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
                 end: Carbon::parse($this->filterFormData['date_end']),
         )
         ->perDay()
-        ->count();
+        ->sum('total');
         return [
             'chart' => [
                 'type' => 'line',
@@ -54,13 +56,13 @@ class BookingByClosedDateChart extends ApexChartWidget
             ],
             'series' => [
                 [
-                    'name' => 'Booking',
-                    'data'=>  $quotes->map(fn (TrendValue $value) => $value->aggregate),
+                    'name' => 'Price',
+                    'data' => $price->map(fn (TrendValue $value) => $value->aggregate),
                     'type' => 'column',
                 ],
-                [
-                    'name' => 'Close Date',
-                      'data'=> $enquiry_date->map(fn (TrendValue $value) => $value->aggregate),
+                   [
+                    'name' => 'Count',
+                    'data' => $count->map(fn (TrendValue $value) => $value->aggregate),
                     'type' => 'line',
                 ],
             ],
@@ -68,19 +70,24 @@ class BookingByClosedDateChart extends ApexChartWidget
                 'width' => [0, 4],
             ],
             'xaxis' => [
-                'categories' =>  $enquiry_date->map(fn (TrendValue $value) => $value->aggregate),
+                'categories' => $count->map(fn (TrendValue $value) => $value->date),
                 'labels' => [
                     'style' => [
                         'fontFamily' => 'inherit',
                     ],
                 ],
+                'type'=> "datetime",
             ],
             'yaxis' => [
-                'labels' => [
-                    'style' => [
-                        'fontFamily' => 'inherit',
-                    ],
+                 ['title' =>[
+                    'text'=> 'Price'
                 ],
+            ],
+                ['opposite' => 'true',
+                'title' =>[
+                    'text'=> 'Count'
+                ],
+            ],
             ],
             'legend' => [
                 'labels' => [
