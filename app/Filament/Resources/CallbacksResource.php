@@ -171,10 +171,10 @@ class CallbacksResource extends Resource
                                                 ->danger()
                                                 ->send();                                
                                             }
-                                            else{
+                                            else{                                                 
                                                 return redirect()->away('https://operator.savari.io/job.php?action=edit&id=' . $state . '&list=new');
                                             }
-                                            })
+                                            }),
                                         ]),
                
                         // Select::make('customer')->label('Customer')->options(Customer::pluck('name', 'id'))->required(),

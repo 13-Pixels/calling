@@ -36,6 +36,8 @@ class LostByClosedDateChart extends ApexChartWidget
     protected function getOptions(): array
     {
        $count = Trend::query(Callback::where('callback_status', 'lost'))
+                   ->dateColumn('close_date')
+
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
             end: Carbon::parse($this->filterFormData['date_end']),
@@ -43,6 +45,8 @@ class LostByClosedDateChart extends ApexChartWidget
         ->perDay()
         ->count();
         $price = Trend::query(Callback::where('callback_status', 'lost'))
+                    ->dateColumn('close_date')
+
         ->between(
             start: Carbon::parse($this->filterFormData['date_start']),
                 end: Carbon::parse($this->filterFormData['date_end']),
