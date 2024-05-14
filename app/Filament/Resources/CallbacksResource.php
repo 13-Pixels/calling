@@ -212,10 +212,19 @@ class CallbacksResource extends Resource
                             Select::make('cancel_reason')
                                 ->options(fn (Get $get): array => match ($get('callback_status')) {
                                     'lost' => [
-                                        'price_was_high' => 'Price Was High',
-                                        'booked_elsewhere' => 'Booked Elsewhere',
-                                        'plan_cancelled' => 'Plan Cancelled',
+                                        'price_was_high' => 'Price was high',
+                                        'booked_elsewhere' => 'Booked elsewhere',
+                                        'plan_cancelled' => 'Plan cancelled',
+                                        'booked_on_other_quote' => 'Booked on other quote',
+                                        'booked_with_competitor' => 'Booked with competitor',
+                                        'duplicate_job' => 'Duplicate job',
+                                        'no_contract' => 'No contract',
+                                        'journey_not_required' => 'Journey not required',
+                                        'payment_terms' => 'Payment terms',
+                                        'price' => 'Price',
+                                        'unable_to_meet_deadline' => 'Unable to meet deadline',
                                         'others' => 'Others',
+                                        'unsuitable_supply' => 'Unsuitable supply',
                                     ],
                                     default => [],
                                 }),
