@@ -14,6 +14,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Resources\RelationManagers\RelationManager;
 
 class ActivityRelationManager extends RelationManager
@@ -59,12 +62,14 @@ class ActivityRelationManager extends RelationManager
             ])
             ->actions([
                ViewAction::make()->color('warning'),
+               DeleteAction::make(),
+
+            ])
+            ->bulkActions([
+               BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
-            // ->bulkActions([
-            //    BulkActionGroup::make([
-            //         //DeleteBulkAction::make(),
-            //     ]),
-            // ]);
     }
     
 }
