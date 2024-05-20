@@ -8,8 +8,10 @@ use Filament\Forms\Get;
 use App\Models\Callback;
 use App\Models\Customer;
 use App\Models\Location;
-use Filament\Forms\Form;
+use App\Models\Settings;
 
+use Filament\Forms\Form;
+use App\Mail\CallbackMail;
 use Filament\Tables\Table;
 use App\Enums\CallBackEnum;
 use Filament\Facades\Filament;
@@ -21,6 +23,7 @@ use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\URL;
 use Filament\Forms\Components\Split;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
@@ -32,6 +35,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Redirect;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
@@ -406,6 +410,25 @@ class CallbacksResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
                 Tables\Actions\DeleteAction::make()->iconButton(),
+                Tables\Actions\Action::make('Email')
+                ->form([
+                    // TextInput::make('subject')->required()->default(fn (Model $record): string => $record->drop_off)->disabled()->dehydrated(),
+                    TextInput::make('to')->required()->default(fn (Model $record): string => $record->customer_email),
+                    Textarea::make('body')->required()
+                    ->default(fn(Settings $settings): string => $settings->first() ? $settings->pluck('callback_mail')->first() : '')    ->autosize(),
+                ])
+                ->action(function (array $data) {
+                    // dd($data);
+
+                    // dd($data);
+           
+                         Mail::to($data['to'])
+            ->send(new CallbackMail(
+                // subject: $data['subject'],
+                 $data['body'],
+            ));
+                })
+             
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
