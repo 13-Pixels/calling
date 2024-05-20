@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CallbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,4 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 Route::redirect('/', '/admin/login');
+Route::get('mail/{record}', [CallbackController::class, 'mail'])->name('mail');

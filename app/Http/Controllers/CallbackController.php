@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Callback;
+use App\Mail\CallbackMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\CallbackResource;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\CallbackCollection;
@@ -87,5 +89,10 @@ class CallbackController extends Controller
         } catch (\Exception $e) {
             return $e;
         }   
+    }
+
+    public function mail($id){
+        $callback = Callback::findOrFail($id);
+          Mail::to($callback->customer_email)->send(new CallbackMail($callback));
     }
 }
