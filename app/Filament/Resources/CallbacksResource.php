@@ -427,6 +427,10 @@ class CallbacksResource extends Resource
                 // subject: $data['subject'],
                  $data['body'],
             ));
+             Notification::make()
+            ->title('Mail sent successfully')
+            ->success()
+            ->send();
                 })
              
             ])
