@@ -414,7 +414,6 @@ class CallbacksResource extends Resource
                 ->form([
                     // TextInput::make('subject')->required()->default(fn (Model $record): string => $record->drop_off)->disabled()->dehydrated(),
                     TextInput::make('to')->required()->default(fn (Model $record): string => $record->customer_email),
-                    TextInput::make('subject'),
                     Textarea::make('body')->required()
                     ->default(fn(Settings $settings): string => $settings->first() ? $settings->pluck('callback_mail')->first() : '')    ->autosize(),
                 ])

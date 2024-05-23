@@ -21,6 +21,9 @@ class Settings  extends Page implements HasForms
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.settings';
+
+    protected static ?string $navigationGroup = 'Mail';
+
  public ?array $data = [];
     
     public function mount(): void
